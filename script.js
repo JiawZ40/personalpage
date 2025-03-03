@@ -15,49 +15,28 @@ themeToggle.addEventListener('click', () => {
 
 // 动态网络背景
 function initNetwork() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const nodes = Array.from({length: 80}, (_, i) => ({id: i}));
-    const links = Array.from({length: 120}, () => ({
-        source: Math.floor(Math.random() * 80),
-        target: Math.floor(Math.random() * 80)
+    // 减少节点数量提升性能
+    const nodes = Array.from({length: 40}, (_, i) => ({id: i}));
+    const links = Array.from({length: 60}, () => ({
+        source: Math.floor(Math.random() * 40),
+        target: Math.floor(Math.random() * 40)
     }));
 
+    // 调整物理参数
     const simulation = d3.forceSimulation(nodes)
-        .force("charge", d3.forceManyBody().strength(-30))
-        .force("link", d3.forceLink(links).distance(50))
-        .force("center", d3.forceCenter(width/2, height/2));
+        .force("charge", d3.forceManyBody().strength(-20))
+        .force("link", d3.forceLink(links).distance(80))
+        .force("center", d3.forceCenter(width/2, height/2))
+        .alphaDecay(0.02); // 减慢动画衰减速度
 
-    const svg = d3.select("#network-bg")
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height);
-
-    svg.selectAll("line")
-        .data(links)
-        .enter().append("line")
-        .attr("stroke", "var(--network-color)")
-        .attr("stroke-width", 0.8);
-
-    svg.selectAll("circle")
-        .data(nodes)
-        .enter().append("circle")
-        .attr("r", 2)
-        .attr("fill", "var(--network-color)");
-
-    simulation.on("tick", () => {
-        svg.selectAll("line")
-            .attr("x1", d => d.source.x)
-            .attr("y1", d => d.source.y)
-            .attr("x2", d => d.target.x)
-            .attr("y2", d => d.target.y);
-
-        svg.selectAll("circle")
-            .attr("cx", d => d.x)
-            .attr("cy", d => d.y);
+    // 添加自适应重绘
+    window.addEventListener('resize', () => {
+        svg.attr("width", window.innerWidth)
+           .attr("height", window.innerHeight);
+        simulation.force("center", d3.forceCenter(window.innerWidth/2, window.innerHeight/2));
+        simulation.restart();
     });
 }
-
 // 初始化逻辑
 document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('theme') === 'dark') {
