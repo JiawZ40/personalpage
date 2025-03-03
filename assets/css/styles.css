@@ -1,100 +1,50 @@
-/* Custom Styles */
+/* styles.min.css */
+:root {
+    --bg-color: #ffffff;
+    --text-color: #212529;
+    --card-bg: #f8f9fa;
+    --primary: #0d6efd;
+}
+
+[data-bs-theme="dark"] {
+    --bg-color: #212529;
+    --text-color: #f8f9fa;
+    --card-bg: #2d3339;
+    --primary: #4dabf7;
+}
+
 body {
-    font-family: 'Arial', sans-serif;
-    color: #333;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--text-color);
+    background: var(--bg-color);
+    line-height: 1.6;
 }
 
 .navbar {
-    padding: 1rem 0;
+    backdrop-filter: blur(10px);
+    background-color: rgba(var(--bg-color), 0.9);
 }
 
 .profile-img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    margin-bottom: 20px;
-}
-
-.hero-section {
-    padding: 100px 0;
-    background: url('../img/bg-hero.svg') no-repeat center center/cover;
-}
-
-.section {
-    padding: 80px 0;
-}
-
-.section-title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 40px;
-    text-align: center;
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border: 3px solid var(--primary);
 }
 
 .card {
-    border: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
+    background: var(--card-bg);
+    transition: transform 0.2s ease;
 }
 
 .card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-5px);
 }
 
-.icon {
-    width: 50px;
-    height: 50px;
-}
-
-.social-links a {
-    color: #333;
-    margin: 0 10px;
-    font-size: 1.5rem;
-    transition: color 0.3s;
-}
-
-.social-links a:hover {
-    color: #007bff;
-}
-
-.footer {
-    border-top: 1px solid #eee;
-}
-:root {
-    --bg-color: #ffffff;
-    --text-color: #333333;
-    --card-bg-color: #f8f9fa;
-    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="dark"] {
-    --bg-color: #121212;
-    --text-color: #ffffff;
-    --card-bg-color: #1e1e1e;
-    --card-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
-}
-/* 新增网络画布样式 */
 .network-canvas {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1; /* 置于内容层下方 */
-}
-
-/* 调整原有内容透明度 */
-.hero-section, .section {
-    background-color: rgba(255, 255, 255, 0.85); /* 半透明白色背景 */
-    position: relative; /* 确保层级高于画布 */
-}
-
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-}
-
-.card {
-    background-color: var(--card-bg-color);
-    box-shadow: var(--card-shadow);
+    z-index: -1;
+    opacity: 0.1;
 }
