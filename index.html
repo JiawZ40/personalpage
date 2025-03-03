@@ -32,19 +32,17 @@
     </nav>
 
     <main class="container pt-5 mt-5">
-        <section class="hero-section text-center py-5">
-            <img src="assets/img/profile.png" alt="Profile" class="profile-img rounded-circle mb-4">
-            <h1 class="display-5 fw-bold mb-3">Jiawei Zhu</h1>
-            <p class="lead mb-4">Ph.D Candidate in Artificial Intelligence</p>
-            <div class="social-links">
-                <a href="mailto:jiawzhu40@gmail.com" class="text-decoration-none mx-2">
-                    <i class="fas fa-envelope fa-lg"></i>
-                </a>
-                <a href="#" class="text-decoration-none mx-2">
-                    <i class="fab fa-github fa-lg"></i>
-                </a>
-            </div>
-        </section>
+    <!-- 修改后的HTML部分 -->
+     <section class="hero-section text-center py-5 position-relative">
+      <div class="profile-container position-absolute top-0 start-50 translate-middle-x">
+         <img src="assets/img/profile.png" alt="Profile" 
+             class="profile-img rounded-circle shadow-lg border-white">
+      </div>
+      <div class="content-overlay pt-5">
+        <h1 class="display-5 fw-bold mb-3">Jiawei Zhu</h1>
+        <p class="lead mb-4">Ph.D Candidate in Artificial Intelligence</p>
+      </div>
+     </section>
 
         <section id="about" class="py-5">
             <div class="section-card card p-4 mb-4">
