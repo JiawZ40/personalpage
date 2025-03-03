@@ -5,37 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Name - Academic Homepage</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .navbar {
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            margin-bottom: 20px;
-        }
-        .section {
-            padding: 60px 0;
-        }
-        .section-title {
-            margin-bottom: 40px;
-            font-size: 2rem;
-            font-weight: bold;
-        }
-        .card {
-            border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#">Your Name</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,11 +36,17 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="section">
+    <section class="hero-section">
         <div class="container text-center">
-            <img src="https://via.placeholder.com/150" alt="Profile Image" class="profile-img">
+            <img src="assets/img/profile.png" alt="Profile Image" class="profile-img">
             <h1>Your Name</h1>
             <p class="lead">Assistant Professor at University of Technology</p>
+            <div class="social-links mt-3">
+                <a href="#" class="text-decoration-none"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-decoration-none"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="text-decoration-none"><i class="fab fa-github"></i></a>
+                <a href="#" class="text-decoration-none"><i class="fas fa-envelope"></i></a>
+            </div>
         </div>
     </section>
 
@@ -78,29 +59,32 @@
     </section>
 
     <!-- Research Section -->
-    <section id="research" class="section">
+    <section id="research" class="section bg-light">
         <div class="container">
             <h2 class="section-title">Research</h2>
             <div class="row">
                 <div class="col-md-4">
-                    <div class="card">
+                    <div class="card h-100">
                         <div class="card-body">
+                            <img src="assets/img/icon-ml.svg" alt="Machine Learning" class="icon mb-3">
                             <h5 class="card-title">Machine Learning</h5>
                             <p class="card-text">Exploring new algorithms for supervised and unsupervised learning.</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card">
+                    <div class="card h-100">
                         <div class="card-body">
+                            <img src="assets/img/icon-nlp.svg" alt="NLP" class="icon mb-3">
                             <h5 class="card-title">NLP</h5>
                             <p class="card-text">Developing models for natural language understanding and generation.</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card">
+                    <div class="card h-100">
                         <div class="card-body">
+                            <img src="assets/img/icon-cv.svg" alt="Computer Vision" class="icon mb-3">
                             <h5 class="card-title">Computer Vision</h5>
                             <p class="card-text">Researching techniques for image recognition and video analysis.</p>
                         </div>
@@ -114,7 +98,7 @@
     <section id="publications" class="section">
         <div class="container">
             <h2 class="section-title">Publications</h2>
-            <ul class="list-group">
+            <ul class="list-group list-group-flush">
                 <li class="list-group-item">Your First Publication Title (2023)</li>
                 <li class="list-group-item">Your Second Publication Title (2022)</li>
                 <li class="list-group-item">Your Third Publication Title (2021)</li>
@@ -123,13 +107,18 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="section">
+    <section id="contact" class="section bg-light">
         <div class="container">
             <h2 class="section-title">Contact</h2>
             <p>Email: your.email@university.edu</p>
             <p>Phone: +1 (123) 456-7890</p>
         </div>
     </section>
+
+    <!-- Footer -->
+    <footer class="footer bg-white text-center py-3">
+        <p class="mb-0">&copy; 2023 Your Name. All rights reserved.</p>
+    </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
