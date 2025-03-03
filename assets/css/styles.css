@@ -2,10 +2,17 @@
 body {
     font-family: 'Arial', sans-serif;
     color: #333;
+    margin: 0;
+    padding: 0;
+    position: relative;
 }
 
 .navbar {
     padding: 1rem 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
 .hero-section {
@@ -25,8 +32,8 @@ body {
 }
 
 .profile-img {
-    width: 80px; /* Smaller size for a resume-like look */
-    height: 80px; /* Smaller size for a resume-like look */
+    width: 80px;
+    height: 80px;
     border: 3px solid var(--primary);
     border-radius: 50%;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -61,6 +68,8 @@ body {
 
 .section {
     padding: 80px 0;
+    position: relative;
+    z-index: 2;
 }
 
 .section-title {
@@ -87,6 +96,8 @@ body {
 
 .footer {
     border-top: 1px solid #eee;
+    position: relative;
+    z-index: 2;
 }
 
 .network-canvas {
@@ -96,51 +107,52 @@ body {
     width: 100%;
     height: 100%;
     z-index: 1;
+    pointer-events: none; /* Ensure it doesn't interfere with clicks */
 }
 
 /* Responsive Styles */
 @media (max-width: 768px) {
     .profile-img {
-        width: 60px; /* Even smaller on smaller screens */
-        height: 60px; /* Even smaller on smaller screens */
+        width: 60px;
+        height: 60px;
     }
 
     .profile-content h1 {
-        font-size: 1.5rem; /* Adjust heading size for smaller screens */
+        font-size: 1.5rem;
     }
 
     .profile-content .lead {
-        font-size: 1rem; /* Adjust text size for smaller screens */
+        font-size: 1rem;
     }
 
     .section {
-        padding: 60px 0; /* Reduce padding for smaller screens */
+        padding: 60px 0;
     }
 
     .section-title {
-        font-size: 2rem; /* Adjust section title size for smaller screens */
+        font-size: 2rem;
     }
 }
 
 @media (max-width: 480px) {
     .profile-img {
-        width: 50px; /* Smallest size for very small screens */
-        height: 50px; /* Smallest size for very small screens */
+        width: 50px;
+        height: 50px;
     }
 
     .profile-content h1 {
-        font-size: 1.2rem; /* Further adjust heading size */
+        font-size: 1.2rem;
     }
 
     .profile-content .lead {
-        font-size: 0.9rem; /* Further adjust text size */
+        font-size: 0.9rem;
     }
 
     .section {
-        padding: 40px 0; /* Further reduce padding */
+        padding: 40px 0;
     }
 
     .section-title {
-        font-size: 1.5rem; /* Further adjust section title size */
+        font-size: 1.5rem;
     }
 }
