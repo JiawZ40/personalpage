@@ -20,22 +20,41 @@ body {
     font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
-.profile-img {
-    width: 160px;
-    height: 160px;
-    border: 3px solid var(--primary);
-    object-fit: cover;
+/* 新增CSS样式 */
+.hero-section {
+    min-height: 400px;
+    background: linear-gradient(135deg, rgba(13,110,253,0.1), rgba(108,117,125,0.05));
 }
 
-.network-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1;
-    pointer-events: none;
+.profile-container {
+    z-index: 2;
+    top: 30% !important;
 }
+
+.profile-img {
+    width: 120px;
+    height: 120px;
+    border: 3px solid var(--primary);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.profile-img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+
+.content-overlay {
+    position: relative;
+    z-index: 3;
+    padding-top: 80px;
+}
+
+/* 调整网络背景层级 */
+.network-canvas {
+    z-index: 1;
+}
+
 
 .section-card {
     background: var(--card-bg);
