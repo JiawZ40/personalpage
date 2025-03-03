@@ -4,19 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jiawei Zhu - Academic Homepage</title>
-    
-    <!-- 外部样式表 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" 
-          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div id="network-bg" class="network-canvas"></div>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-opacity-75 fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#">Jiawei Zhu</a>
+            <a class="navbar-brand" href="#">Jiawei Zhu</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -31,28 +28,85 @@
         </div>
     </nav>
 
-    <main class="container pt-5 mt-5">
-    <!-- 修改后的HTML部分 -->
-     <section class="hero-section text-center py-5 position-relative">
-      <div class="profile-container position-absolute top-0 start-50 translate-middle-x">
-         <img src="assets/img/profile.png" alt="Profile" 
-             class="profile-img rounded-circle shadow-lg border-white">
-      </div>
-      <div class="content-overlay pt-5">
-        <h1 class="display-5 fw-bold mb-3">Jiawei Zhu</h1>
-        <p class="lead mb-4">Ph.D Candidate in Artificial Intelligence</p>
-      </div>
-     </section>
-
-        <section id="about" class="py-5">
-            <div class="section-card card p-4 mb-4">
-                <h2 class="h3 mb-4">About Me</h2>
-                <p>Jiawei Zhu received the B.E. degree in automation from the Ordos Institute of Technology in 2019...</p>
+    <section class="hero-section">
+        <div class="container text-center position-relative">
+            <img src="assets/img/profile.png" alt="Profile Image" class="profile-img">
+            <h1>Jiawei Zhu</h1>
+            <p class="lead">Ph.D Candidate in Artificial Intelligence</p>
+            <div class="social-links mt-3">
+                <a href="#" class="text-decoration-none"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-decoration-none"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="text-decoration-none"><i class="fab fa-github"></i></a>
+                <a href="#" class="text-decoration-none"><i class="fas fa-envelope"></i></a>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
-    <!-- 外部脚本 -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <p>Jiawei Zhu received the B.E. degree in automation from the Ordos Institute of Technology in 2019...</p>
+        </div>
+    </section>
+
+    <section id="research" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title">Research</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <img src="assets/img/icon-ml.svg" alt="Machine Learning" class="icon mb-3">
+                            <h5 class="card-title">Machine Learning</h5>
+                            <p class="card-text">Exploring new algorithms for supervised and unsupervised learning.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <img src="assets/img/icon-nlp.svg" alt="NLP" class="icon mb-3">
+                            <h5 class="card-title">NLP</h5>
+                            <p class="card-text">Developing models for natural language understanding and generation.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <img src="assets/img/icon-cv.svg" alt="Computer Vision" class="icon mb-3">
+                            <h5 class="card-title">Computer Vision</h5>
+                            <p class="card-text">Researching techniques for image recognition and video analysis.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="publications" class="section">
+        <div class="container">
+            <h2 class="section-title">Publications</h2>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Your First Publication Title (2023)</li>
+                <li class="list-group-item">Your Second Publication Title (2022)</li>
+                <li class="list-group-item">Your Third Publication Title (2021)</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="contact" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title">Contact</h2>
+            <p>Email: your.email@university.edu</p>
+            <p>Phone: +1 (123) 456-7890</p>
+        </div>
+    </section>
+
+    <footer class="footer bg-white text-center py-3">
+        <p class="mb-0">&copy; 2023 Jiawei Zhu. All rights reserved.</p>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="script.js"></script>
