@@ -60,3 +60,26 @@ body {
 .footer {
     border-top: 1px solid #eee;
 }
+:root {
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --card-bg-color: #f8f9fa;
+    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+    --bg-color: #121212;
+    --text-color: #ffffff;
+    --card-bg-color: #1e1e1e;
+    --card-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.card {
+    background-color: var(--card-bg-color);
+    box-shadow: var(--card-shadow);
+}
