@@ -25,9 +25,10 @@ body {
 }
 
 .profile-img {
-    width: 120px;
-    height: 120px;
+    width: 80px; /* Smaller size for a resume-like look */
+    height: 80px; /* Smaller size for a resume-like look */
     border: 3px solid var(--primary);
+    border-radius: 50%;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
 }
@@ -95,4 +96,51 @@ body {
     width: 100%;
     height: 100%;
     z-index: 1;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .profile-img {
+        width: 60px; /* Even smaller on smaller screens */
+        height: 60px; /* Even smaller on smaller screens */
+    }
+
+    .profile-content h1 {
+        font-size: 1.5rem; /* Adjust heading size for smaller screens */
+    }
+
+    .profile-content .lead {
+        font-size: 1rem; /* Adjust text size for smaller screens */
+    }
+
+    .section {
+        padding: 60px 0; /* Reduce padding for smaller screens */
+    }
+
+    .section-title {
+        font-size: 2rem; /* Adjust section title size for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-img {
+        width: 50px; /* Smallest size for very small screens */
+        height: 50px; /* Smallest size for very small screens */
+    }
+
+    .profile-content h1 {
+        font-size: 1.2rem; /* Further adjust heading size */
+    }
+
+    .profile-content .lead {
+        font-size: 0.9rem; /* Further adjust text size */
+    }
+
+    .section {
+        padding: 40px 0; /* Further reduce padding */
+    }
+
+    .section-title {
+        font-size: 1.5rem; /* Further adjust section title size */
+    }
 }
