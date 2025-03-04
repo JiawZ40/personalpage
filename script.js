@@ -19,11 +19,33 @@ const contributions = [
   3, 1, 0, 2, 5, 3, 1, 0, 4, 2, 5, 3, 1, 0, 2, 4, 3, 1, 0, 2, 5, 3, 1, 0, 4, 2, 5, 3, 1, 0,
 ];
 
-// 初始化 Three.js
+// 初始化Three.js场景
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, 800 / 600, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('3d-canvas') });
-renderer.setSize(800, 600);
+
+// 加载STL模型（需先用gh-skyline生成）
+const loader = new THREE.STLLoader();
+loader.load('path/to/your-model.stl', function (geometry) {
+  const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+  const mesh = new THREE.Mesh(geometry, material);
+  scene.add(mesh);
+  
+  // 设置光照
+  const light = new THREE.PointLight(0xffffff, 1);
+  light.position.set(10, 10, 10);
+  scene.add(light);
+  
+  // 相机位置调整
+  camera.position.z = 50;
+});
+
+// 渲染循环
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+animate();
 
 // 添加灯光
 const light = new THREE.DirectionalLight(0xffffff, 1);
@@ -58,3 +80,8 @@ function getColor(count) {
   if (count <= 4) return 0x006d32; // 中等提交
   return 0x26a641; // 大量提交
 }
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
