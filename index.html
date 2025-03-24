@@ -117,16 +117,8 @@
             <p>Bilibili: NA</p>
         </div>
         <div id="chat-container">
-  <div id="chat-history"></div>
-  <input type="text" id="user-input" placeholder="输入问题...">
-  <button onclick="sendRequest()">发送</button>
-</div>
+
     </section>
-<div id="chat-container">
-  <div id="chat-history"></div>
-  <input type="text" id="user-input" placeholder="输入问题...">
-  <button onclick="sendRequest()">发送</button>
-</div
     <!-- Footer -->
     <footer class="footer bg-white text-center py-3">
         <p class="mb-0">&copy; 2025 Jiawei Zhu. All rights reserved.</p>
@@ -135,27 +127,6 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
-    <script>
-const API_KEY = 'sk-d0a3c2af31f54afebe732ba6e112337c'; // 建议通过环境变量或后端代理中转
-const APP_ID = 'd030804b49164f7caa33b09148a01583';
 
-async function sendRequest() {
-  const input = document.getElementById('user-input').value;
-  const response = await fetch('https://bailian.aliyun.com/api/v1/invoke', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${API_KEY}`
-    },
-    body: JSON.stringify({
-      appId: APP_ID,
-      prompt: input,
-      temperature: 0.85 // 可调整生成参数
-    })
-  });
-  const data = await response.json();
-  document.getElementById('chat-history').innerHTML += `<p>AI回复：${data.result}</p>`;
-}
-</script>
 </body>
 </html>
