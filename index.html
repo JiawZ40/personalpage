@@ -122,19 +122,20 @@
   <button onclick="sendRequest()">发送</button>
 </div>
     </section>
-
-    <!-- Footer -->
-    <footer class="footer bg-white text-center py-3">
-        <p class="mb-0">&copy; 2025 Jiawei Zhu. All rights reserved.</p>
-    </footer>
-    <!-- 在GitHub Pages的index.html中嵌入以下代码 -->
 <div id="chat-container">
   <div id="chat-history"></div>
   <input type="text" id="user-input" placeholder="输入问题...">
   <button onclick="sendRequest()">发送</button>
-</div>
+</div
+    <!-- Footer -->
+    <footer class="footer bg-white text-center py-3">
+        <p class="mb-0">&copy; 2025 Jiawei Zhu. All rights reserved.</p>
+    </footer>
 
-<script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+    <script>
 const API_KEY = 'sk-d0a3c2af31f54afebe732ba6e112337c'; // 建议通过环境变量或后端代理中转
 const APP_ID = 'd030804b49164f7caa33b09148a01583';
 
@@ -156,9 +157,5 @@ async function sendRequest() {
   document.getElementById('chat-history').innerHTML += `<p>AI回复：${data.result}</p>`;
 }
 </script>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
-  
 </body>
 </html>
