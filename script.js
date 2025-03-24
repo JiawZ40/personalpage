@@ -5,14 +5,25 @@ gsap.from('.card', {
     stagger: 0.2,
     ease: 'power2.out'
 });
-layer.open({
-  type: 2, // 使用iframe模式
-  title: '<img src="avatar-url" class="ai-avatar"> AI助手',
-  shadeClose: true,
-  area: ['400px', '70%'],
-  offset: 'rb', // 右下角定位
-  content: 'https://your-github-io-url/chat-window.html', // 托管在GitHub Pages的页面
-  success: function(layero){
-    // 添加自定义交互逻辑
-  }
+// 前端调用示例（chat-window.html）
+async function sendMessage() {
+  const response = await fetch('https://your-proxy-domain.com/ali-api-proxy', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ 
+      user_input: document.getElementById('user-input').value 
+    })
+  });
+  const data = await response.json();
+  // 处理返回数据...
+}
+
+// 代理服务器示例（Node.js）
+app.post('/ali-api-proxy', async (req, res) => {
+  const aliResponse = await axios.post('https://aliyun-api-endpoint', {
+    app_id: process.env.ALI_APP_ID, // 从环境变量读取
+    app_key: process.env.ALI_APP_KEY,
+    query: req.body.user_input
+  });
+  res.json(aliResponse.data);
 });
