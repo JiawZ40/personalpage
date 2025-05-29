@@ -11,13 +11,18 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// 如果需要限制访问来源 IP，可以使用 express-ipfilter 等 express 组件：https://www.npmjs.com/package/express-ipfilter
-// const ipFilter = require('express-ipfilter').IpFilter
-// let ipList = []; // 允许或禁止的IP列表
-// app.use(ipFilter(ipList, {
-//   mode: 'allow', // allow or deny
-//   trustProxy: true
-// }));
+// Add CSP headers middleware
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-eval' https://g.alicdn.com; " +
+    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://g.alicdn.com; " +
+    "img-src 'self' data: https://img.alicdn.com; " +
+    "connect-src 'self' https://dashscope.aliyuncs.com;"
+  );
+  next();
+});
 
 app.use(express.static(__dirname + `${process.env.STATIC_DIR}`));
 app.use(bodyParser.urlencoded({ extended: true }));
