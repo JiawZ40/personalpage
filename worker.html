@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>华为模拟器专业版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E88E5',
+                        secondary: '#26A69A',
+                        danger: '#EF5350',
+                        warning: '#FFB74D',
+                        success: '#66BB6A',
+                        info: '#42A5F5',
+                        dark: '#424242',
+                        light: '#F5F5F5',
+                        stress: '#AB47BC',
+                        innovation: '#7E57C2',
+                        process: '#5C6BC0',
+                        trust: '#42A5F5',
+                        ethics: '#26A69A',
+                        kpi: '#FFA726',
+                        health: '#66BB6A'
+                    },
+                    fontFamily: {
+                        sans: ['HarmonyOS Sans SC', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .progress-bar {
+                @apply h-6 rounded-full bg-gray-200 overflow-hidden;
+            }
+            .progress-value {
+                @apply h-full transition-all duration-500 ease-out;
+            }
+            .btn-option {
+                @apply px-6 py-3 rounded-lg font-medium text-white transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-opacity-50;
+            }
+            .day-counter {
+                @apply absolute top-4 left-4 text-2xl font-bold text-dark;
+            }
+            .stats-panel {
+                @apply bg-white rounded-xl shadow-lg p-4 border-l-4 border-primary;
+            }
+            .event-panel {
+                @apply bg-white rounded-xl shadow-lg p-6 border-l-4 border-secondary;
+            }
+            .achievement-badge {
+                @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary;
+            }
+            .keyboard-hint {
+                @apply inline-flex items-center justify-center w-6 h-6 mx-1 text-xs font-medium rounded bg-gray-200 text-gray-700;
+            }
+            .btn-selected {
+                @apply ring-4 ring-yellow-400 ring-opacity-70 transform -translate-y-1 scale-105;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- 顶部导航 -->
+        <header class="mb-8">
+            <div class="flex justify-between items-center">
+                <h1 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-primary flex items-center">
+                    <i class="fa fa-building-o mr-3"></i>华为模拟器专业版
+                </h1>
+                <div class="day-counter">
+                    <span id="day-counter" class="text-primary">Day 0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- 左侧状态面板 -->
+            <div class="w-full lg:w-1/3 stats-panel">
+                <h2 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="fa fa-bar-chart mr-2"></i>员工状态
+                </h2>
+                
+                <!-- 状态条 -->
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="font-medium">健康</span>
+                            <span id="health-value" class="font-semibold">80%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="health-bar" class="progress-value bg-health" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="font-medium">压力</span>
+                            <span id="stress-value" class="font-semibold">20%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="stress-bar" class="progress-value bg-stress" style="width: 20%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="font-medium">绩效</span>
+                            <span id="kpi-value" class="font-semibold">20%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="kpi-bar" class="progress-value bg-kpi" style="width: 20%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="font-medium">电子流熟悉度</span>
+                            <span id="process-value" class="font-semibold">20%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="process-bar" class="progress-value bg-process" style="width: 20%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="font-medium">可信</span>
+                            <span id="trust-value" class="font-semibold">20%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="trust-bar" class="progress-value bg-trust" style="width: 20%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="font-medium">诚信</span>
+                            <span id="ethics-value" class="font-semibold">90%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="ethics-bar" class="progress-value bg-ethics" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="font-medium">创造力</span>
+                            <span id="innovation-value" class="font-semibold">20%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="innovation-bar" class="progress-value bg-innovation" style="width: 20%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 其他状态指标 -->
+                <div class="mt-6 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium">菊币</span>
+                        <span id="coins-value" class="font-semibold text-lg">¥0</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium">专利</span>
+                        <span id="patents-value" class="font-semibold text-lg">0</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium">当前阶段</span>
+                        <span id="phase-value" class="font-semibold text-lg text-primary">新员工培训</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧事件面板 -->
+            <div class="w-full lg:w-2/3 event-panel">
+                <div id="event-container">
+                    <h2 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fa fa-calendar-check-o mr-2"></i><span id="event-day">Day 0</span>
+                    </h2>
+                    
+                    <div id="event-description" class="mb-8 text-lg leading-relaxed">
+                        欢迎加入华为！你的职场生涯即将开始...
+                    </div>
+                    
+                    <div id="options-container" class="flex flex-col sm:flex-row gap-4 mt-6">
+                        <!-- 选项按钮将在这里动态生成 -->
+                    </div>
+                    
+                    <div class="mt-4 text-sm text-gray-500">
+                        <span class="keyboard-hint">↑</span>
+                        <span class="keyboard-hint">↓</span> 选择选项
+                        <span class="keyboard-hint">Enter</span> 确认
+                    </div>
+                    
+                    <div id="achievements-container" class="mt-6">
+                        <h3 class="font-medium mb-2 text-sm text-gray-600">成就</h3>
+                        <div id="achievements-list" class="flex flex-wrap gap-2">
+                            <!-- 成就徽章将在这里动态生成 -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 结局弹窗 -->
+                <div id="ending-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+                    <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100">
+                        <h2 class="text-2xl font-bold mb-4 text-center text-primary">游戏结束</h2>
+                        <p id="ending-text" class="text-lg text-center mb-6">你完成了所有挑战！</p>
+                        <div class="flex justify-center">
+                            <button id="restart-button" class="btn-option bg-primary">
+                                <i class="fa fa-refresh mr-2"></i>重新开始
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="mt-12 text-center text-gray-500 text-sm">
+            <p>© 2025 华为模拟器专业版 | 仅供娱乐，非官方游戏</p>
+        </footer>
+    </div>
+
+    <script>
+        // 游戏阶段枚举
+        const GamePhase = {
+            NEO: "新员工培训",
+            DEPARTMENT: "部门生存战",
+            CHAOS: "混沌开发",
+            OUTPUT: "输出轮回"
+        };
+
+        // 增强版游戏逻辑
+        class HuaweiSimulatorPro {
+            constructor() {
+                this.stats = {
+                    'health': 80, 'kpi': 20, 'trust': 20, 'coins': 0,
+                    'days': 0, 'ethics': 90, 'stress': 20, 'innovation': 20,
+                    'process': 20, 'patents': 0,
+                    'high_altitude': 0,  // 高原基站部署次数
+                    'backup_plan': 0,  // 替代料方案收集
+                    'mentor_student': 1  // 培养徒弟数量
+                };
+                this.phase = GamePhase.NEO;
+                this.achievements = new Set();
+                this._initEnhancedEvents();
+                this.eventPools = {
+                    [GamePhase.NEO]: {
+                        remaining: [],
+                        triggered: []
+                    },
+                    [GamePhase.DEPARTMENT]: {
+                        remaining: [],
+                        triggered: []
+                    },
+                    [GamePhase.CHAOS]: {
+                        remaining: [],
+                        triggered: []
+                    },
+                    [GamePhase.OUTPUT]: {
+                        remaining: [],
+                        triggered: []
+                    }
+                };
+
+                // 初始化各阶段事件池
+                for (const [phase, events] of Object.entries(this.events)) {
+                    this.eventPools[phase].remaining = [...events];
+                    this._shuffleArray(this.eventPools[phase].remaining);
+                }
+            }
+
+            _initEnhancedEvents() {
+                this.events = {
+                    [GamePhase.NEO]: [
+                        this._neoExamEvent,
+                        this._mentorEvent,
+                        this._snackQualityEvent,
+                        this._hiringContractEvent,
+                        this._englishInterviewEvent,
+                        this._familyApprovalEvent,
+                        this._salaryShowoffEvent,
+                        this._ruralOriginEvent,
+                        this._academicPressureEvent,
+                        this._militaryDisciplineEvent,
+                        this._firstMeetingEvent,
+                        this._shenzhenShockEvent,
+                        this._mentorEscapeEvent,
+                        this._xpSystemEvent,
+                        this._hometownComparisonEvent,
+                        this._documentTranslationEvent,
+                        this._midnightSnackEvent
+                    ],
+                    [GamePhase.DEPARTMENT]: [
+                        this._odFraudEvent,
+                        this._ipdProcessTrapEvent,
+                        this._sanyapoWarEvent,
+                        this._dcpBlackboxEvent,
+                        this._patentHarvestEvent,
+                        this._trustedRdEvent,
+                        this._qualityTraceEvent,
+                        this._monthEndSaturdayEvent,
+                        this._qualificationDefenseEvent,
+                        this._chipNormalizationEvent,
+                        this._codeMergeWarEvent,
+                        this._haltDisasterEvent,
+                        this._ironTriangleEvent,
+                        this._cloudDisconnectEvent,
+                        this._fmeaPerformanceEvent,
+                        this._separationPowerEvent,
+                        this._digitalTwinEvent,
+                        this._patentJungleEvent,
+                        this._qualityStormEvent,
+                        this._harmonyosChaosEvent,
+                        this._finalOutputTrapEvent
+                    ],
+                    [GamePhase.CHAOS]: [
+                        this._apiDocumentEvent
+                    ]
+                };
+            }
+
+            // 事件方法定义
+            _neoExamEvent() {
+                return {
+                    "desc": "新员工考试遇到不会的题目\nA. 偷看邻座答案\nB. 诚实作答",
+                    "options": {
+                        "A": {"effect": {"kpi": 10, "ethics": -15}},
+                        "B": {"effect": {"kpi": -5, "ethics": 10}}
+                    }
+                };
+            }
+
+            _mentorEvent() {
+                return {
+                    "desc": "导师要求周末加班陪练\nA. 欣然答应\nB. 委婉拒绝",
+                    "options": {
+                        "A": {"effect": {"kpi": 15, "stress": 20, "trust": 10}},
+                        "B": {"effect": {"kpi": -5, "stress": -10, "trust": -5}}
+                    }
+                };
+            }
+
+            _snackQualityEvent() {
+                return {
+                    "desc": "发现公司提供的下午茶质量下降\nA. 向行政反馈\nB. 自己点外卖",
+                    "options": {
+                        "A": {"effect": {"stress": -5, "process": 5}},
+                        "B": {"effect": {"coins": -20, "stress": -10}}
+                    }
+                };
+            }
+
+            _hiringContractEvent() {
+                return {
+                    "desc": "签约时HR小姐姐说：『工作满五年就是对我最大的感谢』\nA. 郑重签字\nB. 反问违约金",
+                    "options": {
+                        "A": {"effect": {"ethics": 5}, "achievement": "五年之诺"},
+                        "B": {"effect": {"stress": -5}}
+                    }
+                };
+            }
+
+            _englishInterviewEvent() {
+                return {
+                    "desc": "海外拉会因『How are you』答成『Fine,thank you』被鄙视\nA. 怒练口语\nB. 嘲笑海外同事英语不地道",
+                    "options": {
+                        "A": {"effect": {"stress": 10, "kpi": 3}},
+                        "B": {"effect": {"trust": -5}}
+                    }
+                };
+            }
+
+            _familyApprovalEvent() {
+                return {
+                    "desc": "父亲认为『私企不如九院稳定』\nA. 晒工资条\nB. 谎称国企",
+                    "options": {
+                        "A": {"effect": {"coins": 5500}},
+                        "B": {"effect": {"ethics": -20}, "achievement": "善意的谎言"}
+                    }
+                };
+            }
+
+            _salaryShowoffEvent() {
+                return {
+                    "desc": "老家亲戚炫耀九院分房\nA. 晒股票分红截图\nB. 谎称深圳有福利房",
+                    "options": {
+                        "A": {"effect": {"coins": 8888, "stress": 15}},
+                        "B": {"effect": {"ethics": -20}}
+                    }
+                };
+            }
+
+            _ruralOriginEvent() {
+                return {
+                    "desc": "作为农村长子需承担全家开销\nA. 申请海外艰苦补贴\nB. 挪用团建经费",
+                    "options": {
+                        "A": {"effect": {"health": -10, "coins": 2000}},
+                        "B": {"effect": {"ethics": -30}}
+                    }
+                };
+            }
+
+            _academicPressureEvent() {
+                return {
+                    "desc": "发现985硕士同事在写Hello World\nA. 主动辅导暴露实力\nB. 装作不懂保护关系",
+                    "options": {
+                        "A": {"effect": {"stress": 20, "kpi": 5}, "achievement": "卷王之王"},
+                        "B": {"effect": {"ethics": -10, "trust": 3}, "achievement": "职场影帝"}
+                    }
+                };
+            }
+
+            _militaryDisciplineEvent() {
+                return {
+                    "desc": "发现迟到1分钟扣半天工资\nA. 提前蹲守\nB. 伪造打卡",
+                    "options": {
+                        "A": {"effect": {
+                            "health": -8,
+                            "kpi": 5,
+                            "process": 2
+                        }},
+                        "B": {"effect": {
+                            "ethics": -15,
+                            "stress": -10,
+                            "trust": -5
+                        }}
+                    }
+                };
+            }
+
+            _firstMeetingEvent() {
+                return {
+                    "desc": "在花厂大厦迷路误入高管会议室\nA. 冒充0012763\nB. 谎称送外卖",
+                    "options": {
+                        "A": {"effect": {"kpi": 3, "ethics": -5}},
+                        "B": {"effect": {"stress": 10}}
+                    }
+                };
+            }
+
+            _shenzhenShockEvent() {
+                return {
+                    "desc": "发现深南大道比老家县城还宽\nA. 拍照发朋友圈\nB. 谎称见过世面",
+                    "options": {
+                        "A": {"effect": {"coins": -100, "stress": -3}},
+                        "B": {"effect": {"ethics": -5}}
+                    }
+                };
+            }
+
+            _mentorEscapeEvent() {
+                return {
+                    "desc": "导师说『单板调不通别来见我』\nA. 通宵攻关\nB. 修改测试用例",
+                    "options": {
+                        "A": {"effect": {
+                            "health": -15,
+                            "kpi": 10,
+                            "innovation": 5,
+                            "mentor_student": -1
+                        }},
+                        "B": {"effect": {
+                            "ethics": -20,
+                            "process": -5,
+                            "stress": -15
+                        }}
+                    }
+                };
+            }
+
+            _xpSystemEvent() {
+                return {
+                    "desc": "用Windows XP完成区块链考试\nA. 强行破解\nB. 申请延期",
+                    "options": {
+                        "A": {"effect": {"stress": 15, "kpi": 10}},
+                        "B": {"effect": {"kpi": -5, "trust": 5}}
+                    }
+                };
+            }
+
+            _hometownComparisonEvent() {
+                return {
+                    "desc": "老家亲戚炫耀九院分房\nA. 晒股票分红截图\nB. 谎称深圳有福利房",
+                    "options": {
+                        "A": {"effect": {"coins": 8888, "stress": 15}},
+                        "B": {"effect": {"ethics": -20}}
+                    }
+                };
+            }
+
+            _documentTranslationEvent() {
+                return {
+                    "desc": "接手2003年文言文版API文档\nA. 用小鲁班翻译\nB. 甩锅给测试组",
+                    "options": {
+                        "A": {"effect": {"kpi": 5, "health": -5}},
+                        "B": {"effect": {"trust": -10}}
+                    }
+                };
+            }
+
+            _midnightSnackEvent() {
+                return {
+                    "desc": "凌晨三点行政送来过期辣条套餐\nA. 含泪吞下\nB. 拍照发心声社区",
+                    "options": {
+                        "A": {"effect": {
+                            "health": -20,
+                            "kpi": 5,
+                            "trust": 3
+                        }},
+                        "B": {"effect": {
+                            "coins": 100,
+                            "stress": 20,
+                            "ethics": 5
+                        }}
+                    }
+                };
+            }
+
+            _ipdProcessTrapEvent() {
+                return {
+                    "desc": "IPD流程要求18个月完成需求评审\nA.伪造会议纪要\nB.发起流程优化提案",
+                    "options": {
+                        "A": {"effect": {"kpi": 5, "ethics": -20, "process": -8}},
+                        "B": {"effect": {"process": 8, "stress": 30, "kpi": -8}}
+                    }
+                };
+            }
+
+            _sanyapoWarEvent() {
+                return {
+                    "desc": "被紧急征召参与ARM架构迁移会战\nA.连续通宵72小时\nB.装病躲进练秋湖",
+                    "options": {
+                        "A": {"effect": {
+                            "kpi": 15,
+                            "health": -50,
+                            "patents": 1,
+                            "mentor_student": -1
+                        }},
+                        "B": {"effect": {
+                            "stress": -40,
+                            "trust": -40,
+                            "ethics": -15,
+                            "backup_plan": -1
+                        }}
+                    }
+                };
+            }
+
+            _dcpBlackboxEvent() {
+                return {
+                    "desc": "技术评审要求用算盘验证5G算法\nA.淘宝古董算盘\nB.指出评委不懂FFT",
+                    "options": {
+                        "A": {"effect": {"coins":-5000, "process":15}},
+                        "B": {"effect": {"innovation":25, "stress":40, "trust":-20}}
+                    }
+                };
+            }
+
+            _patentHarvestEvent() {
+                return {
+                    "desc": "被要求将大学毕设改成公司专利\nA.添加导师姓名\nB.发明'智能工牌定位系统'",
+                    "options": {
+                        "A": {"effect": {"ethics": -15}},
+                        "B": {"effect": {"kpi": 10}}
+                    }
+                };
+            }
+
+            _trustedRdEvent() {
+                return {
+                    "desc": "用Windows XP完成区块链可信考试\nA.虚拟机作弊被抓\nB.手写SHA256算法",
+                    "options": {
+                        "A": {"effect": {"ethics": -30}},
+                        "B": {"effect": {"health": -20, "kpi": 8}}
+                    }
+                };
+            }
+
+            _qualityTraceEvent() {
+                return {
+                    "desc": "现网故障被要求追溯三年前代码\nA.篡改Git记录\nB.承认祖传代码缺陷",
+                    "options": {
+                        "A": {"effect": {"ethics": -50}},
+                        "B": {"effect": {"trust": 20, "stress": 40}}
+                    }
+                };
+            }
+
+            _monthEndSaturdayEvent() {
+                return {
+                    "desc": "强制参加'奋斗者文化'培训\nA.背诵四大名著\nB.厕所刷招聘网站被AI监控",
+                    "options": {
+                        "A": {"effect": {"stress": 15}},
+                        "B": {"effect": {"ethics": -10}}
+                    }
+                };
+            }
+
+            _qualificationDefenseEvent() {
+                return {
+                    "desc": "14级升15级被问'如何证明你值这个钱'\nA.展示加班记录\nB.怒撕答辩材料",
+                    "options": {
+                        "A": {"effect": {"kpi": 5}},
+                        "B": {"effect": {"stress": -30}}
+                    }
+                };
+            }
+
+            _chipNormalizationEvent() {
+                return {
+                    "desc": "硬件设计被强制使用十年前芯片\nA.伪造测试数据\nB.发起器件替代提案",
+                    "options": {
+                        "A": {"effect": {"kpi": 8, "ethics": -20}},
+                        "B": {"effect": {"process": -15}}
+                    }
+                };
+            }
+
+            _codeMergeWarEvent() {
+                return {
+                    "desc": "因变量名'worker'不够奋斗被拒\nA.改名huami_warrior\nB.提交代码骂战",
+                    "options": {
+                        "A": {"effect": {"kpi": 3}},
+                        "B": {"effect": {"trust": -20}}
+                    }
+                };
+            }
+
+            _haltDisasterEvent() {
+                return {
+                    "desc": "高加速寿命试验烧毁原型机\nA.甩锅给实习生\nB.承认降额设计失误",
+                    "options": {
+                        "A": {"effect": {"ethics": -30}},
+                        "B": {"effect": {"stress": 40}}
+                    }
+                };
+            }
+
+            _ironTriangleEvent() {
+                return {
+                    "desc": "客户要求72小时定制方案\nA.启动铁三角会战\nB.推给友商背锅",
+                    "options": {
+                        "A": {"effect": {"health": -25, "kpi": 20}},
+                        "B": {"effect": {"trust": -30}}
+                    }
+                };
+            }
+
+            _cloudDisconnectEvent() {
+                return {
+                    "desc": "全球研发云突发断连事故\nA.用U盘传递代码\nB.在月亮桥下钓鱼摸鱼",
+                    "options": {
+                        "A": {"effect": {"process": -20}},
+                        "B": {"effect": {"stress": -15}}
+                    }
+                };
+            }
+
+            _fmeaPerformanceEvent() {
+                return {
+                    "desc": "故障模式分析被要求表演舞台剧\nA.编写《代码的自我修养》剧本\nB.指出形式主义遭记过",
+                    "options": {
+                        "A": {"effect": {"kpi": 5}},
+                        "B": {"effect": {"stress": 30}}
+                    }
+                };
+            }
+
+            _separationPowerEvent() {
+                return {
+                    "desc": "SEG要求用三种语言写同一份文档\nA.用GPT生成'花厂八股文'\nB.发起集体抗议",
+                    "options": {
+                        "A": {"effect": {"kpi": 3}},
+                        "B": {"effect": {"stress": -20}}
+                    }
+                };
+            }
+
+            _digitalTwinEvent() {
+                return {
+                    "desc": "虚拟测试要求模拟3000次折叠\nA.写死测试结果\nB.真实测试导致手机冒烟",
+                    "options": {
+                        "A": {"effect": {"ethics": -20}},
+                        "B": {"effect": {"coins": -5000}}
+                    }
+                };
+            }
+
+            _patentJungleEvent() {
+                return {
+                    "desc": "发现核心算法已被三星注册\nA.发明'基于区块链的抄袭检测'\nB.贿赂专利审核员",
+                    "options": {
+                        "A": {"effect": {"innovation": 15}},
+                        "B": {"effect": {"ethics": -50}}
+                    }
+                };
+            }
+
+            _qualityStormEvent() {
+                return {
+                    "desc": "被要求为五年前的代码写十万字检讨\nA.用GPT生成\nB.在SEG评审会装疯",
+                    "options": {
+                        "A": {"effect": {"kpi":5, "ethics":-25, "process":-10}},
+                        "B": {"effect": {"stress":-50, "trust":-30, "health":15}}
+                    }
+                };
+            }
+
+            _harmonyosChaosEvent() {
+                return {
+                    "desc": "联调发现接口文档用甲骨文书写\nA.自学古汉语破译\nB.甩锅给2012实验室",
+                    "options": {
+                        "A": {"effect": {"kpi":15, "health":-25, "innovation":20}},
+                        "B": {"effect": {"trust":-40, "stress":-20, "process":-15}}
+                    }
+                };
+            }
+
+            _finalOutputTrapEvent() {
+                return {
+                    "desc": "升15后接到部门招聘任务\nA.承担任务\nB.果断拒绝",
+                    "options": {
+                        "A": {"effect": {"kpi": -50}},
+                        "B": {"effect": {"kpi": -20}}
+                    }
+                };
+            }
+
+            _apiDocumentEvent() {
+                return {
+                    "desc": "发现文言文API文档：\nA.自行解析\nB.甩锅SE",
+                    "options": {
+                        "A": {"effect": {"health": -5, "kpi": 3}},
+                        "B": {"effect": {"trust": -3}}
+                    }
+                };
+            }
+
+            // 工具方法
+            _shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            modifyStat(stat, value) {
+                if (this.stats[stat] !== undefined) {
+                    this.stats[stat] = Math.max(0, Math.min(100, this.stats[stat] + value));
+                }
+            }
+
+            // 触发随机事件
+            triggerRandomEvent() {
+                if (this.phase in this.eventPools) {
+                    const pool = this.eventPools[this.phase];
+                    if (pool.remaining.length === 0) {
+                        // 重置事件池
+                        pool.remaining = [...pool.triggered];
+                        pool.triggered = [];
+                        this._shuffleArray(pool.remaining);
+                    }
+                    
+                    const eventFunc = pool.remaining.pop();
+                    pool.triggered.push(eventFunc);
+                    return eventFunc.bind(this)();
+                }
+                return null;
+            }
+
+            // 检查是否达成结局条件
+            checkEnding() {
+                // 战略达成型结局
+                const baseDays = 30;
+                if (this.stats['days'] >= 10) {
+                    if (this.stats['health'] <= 0) {
+                        return "🌉 身体是革命的本钱，同学要珍惜健康";
+                    }
+                    if (this.stats['innovation'] >= 100) {
+                        return "🚀 创新领袖结局（执掌2012实验室）";
+                    }
+                    if (this.stats['trust'] >= 100) {
+                        return "🌐 专业可信，全球专家结局（派驻慕尼黑研究院）";
+                    }
+                    if (this.stats['process'] >= 100) {
+                        return "📑 流程大师结局（调任三丫坡流程优化中心，过点大师）";
+                    }
+                    if (this.stats['ethics'] <= 0) {
+                        return "📜 贪腐被查，BCG结局（成为周会案例）";
+                    }
+                    if (this.stats['stress'] >= 100) {
+                        return "🧨 压力拉满，悲情输出结局（PL都被你卷跑了，部门解散）";
+                    }
+                }
+                
+                if (this.stats['days'] >= 30) {
+                    // 战略成就型
+                    if (
+                        this.stats['kpi'] >= 90 &&
+                        this.stats['innovation'] >= 50 &&
+                        this.stats['patents'] >= 1 &&
+                        this.stats['days'] >= baseDays
+                    ) {
+                        return "🌟 技术大咖结局（破格晋升SEG委员）";
+                    }
+                    if (this.stats['innovation'] >= 90 && this.stats['patents'] >= 5) {
+                        return "🚀 创新领袖结局（执掌2012实验室）";
+                    }
+                    if (this.stats['process'] >= 50 && this.stats['ethics'] >= 80) {
+                        return "💎 流程优化大师结局（调任IPD改革组）";
+                    }
+                    if (this.stats['trust'] >= 95 && this.stats['days'] >= 20) {
+                        return "🌐 全球专家结局（派驻慕尼黑研究院）";
+                    }
+                    if (this.stats['stress'] >= 80 && this.stats['kpi'] >= 90) {
+                        return "🏆 金牌奋斗者结局（奋斗者之魂）";
+                    }
+
+                    // 战略失控型结局
+                    if (this.stats['innovation'] <= 20 && this.stats['stress'] >= 70) {
+                        return "💥 技术负债爆炸结局（被DRB裁定技术路线错误）";
+                    }
+                    if (this.stats['coins'] <= -2000 && this.stats['trust'] <= 40) {
+                        return "🕳️ 资源黑洞结局（永久冻结预算审批权）";
+                    }
+                    if (this.stats['kpi'] <= 30 && this.stats['days'] >= 20) {
+                        return "🤖 工具人结局（调任祖传代码维护组）";
+                    }
+                    if (this.stats['ethics'] <= 20 && this.stats['coins'] >= 1500) {
+                        return "💸 花厂蛀虫结局（反贪组入驻工位）";
+                    }
+                    if (this.stats['health'] <= 30 && this.stats['stress'] >= 90) {
+                        return "🌋 火山口结局（被强制输出班加罗尔）";
+                    }
+                    if (this.stats['backup_plan'] >= 5 && this.stats['high_altitude'] >= 2) {
+                        return "🛡️ 备胎转正结局（地想特别表彰）";
+                    }
+                    if (this.stats['innovation'] <= 10 && this.stats['stress'] >= 80) {
+                        return "💥 技术负债爆炸结局（被DRB裁定技术路线错误）";
+                    }
+                    
+                    // 战略调整型结局
+                    if (this.stats['ethics'] >= 80 && this.stats['kpi'] <= 50) {
+                        return "🔄 职业转换结局（调任质量回溯专员）";
+                    }
+                    if (this.stats['stress'] >= 70 && this.stats['innovation'] >= 40) {
+                        return "🌙 湖畔哲人结局（心声社区专栏作家）";
+                    }
+                    if (this.stats['process'] >= 60 && this.stats['kpi'] <= 60) {
+                        return "📚 知识管家结局（任职三丫坡档案馆）";
+                    }
+                    if (this.stats['innovation'] <= 20 && this.stats['days'] >= 15) {
+                        return "🛠️ 器件归一化结局（转入十年芯片维护组）";
+                    }
+                    if (this.stats['trust'] >= 70 && this.stats['stress'] <= 50) {
+                        return "🌉 流程节点结局（永久派驻月亮桥协调岗）";
+                    }
+                }
+                
+                // 阶段转换
+                if (this.stats['days'] >= 10 && this.phase === GamePhase.NEO) {
+                    this.phase = GamePhase.DEPARTMENT;
+                    return null;
+                }
+                
+                return null;
+            }
+        }
+
+        // 网页UI控制器 - 增强交互功能
+        class HuaweiUIController {
+            constructor(game) {
+                this.game = game;
+                this.currentEvent = null;
+                this.selectedOptionIndex = 0;
+                
+                // DOM元素引用
+                this.dayCounter = document.getElementById('day-counter');
+                this.eventDay = document.getElementById('event-day');
+                this.eventDescription = document.getElementById('event-description');
+                this.optionsContainer = document.getElementById('options-container');
+                this.achievementsList = document.getElementById('achievements-list');
+                this.endingModal = document.getElementById('ending-modal');
+                this.endingText = document.getElementById('ending-text');
+                this.restartButton = document.getElementById('restart-button');
+                
+                // 状态指标元素
+                this.statusElements = {
+                    health: { value: document.getElementById('health-value'), bar: document.getElementById('health-bar') },
+                    stress: { value: document.getElementById('stress-value'), bar: document.getElementById('stress-bar') },
+                    kpi: { value: document.getElementById('kpi-value'), bar: document.getElementById('kpi-bar') },
+                    process: { value: document.getElementById('process-value'), bar: document.getElementById('process-bar') },
+                    trust: { value: document.getElementById('trust-value'), bar: document.getElementById('trust-bar') },
+                    ethics: { value: document.getElementById('ethics-value'), bar: document.getElementById('ethics-bar') },
+                    innovation: { value: document.getElementById('innovation-value'), bar: document.getElementById('innovation-bar') },
+                    coins: { value: document.getElementById('coins-value') },
+                    patents: { value: document.getElementById('patents-value') },
+                    phase: { value: document.getElementById('phase-value') }
+                };
+                
+                // 注册事件监听器
+                this.restartButton.addEventListener('click', () => this.restartGame());
+                document.addEventListener('keydown', (e) => this.handleKeydown(e));
+                
+                // 初始事件
+                this.triggerNewEvent();
+            }
+            
+            // 更新状态显示
+            updateStatusDisplay() {
+                for (const [stat, elements] of Object.entries(this.statusElements)) {
+                    if (elements.bar) {
+                        elements.value.textContent = `${this.game.stats[stat]}%`;
+                        elements.bar.style.width = `${this.game.stats[stat]}%`;
+                        
+                        // 为进度条添加颜色变化效果
+                        if (this.game.stats[stat] <= 20) {
+                            elements.bar.classList.add('animate-pulse');
+                        } else {
+                            elements.bar.classList.remove('animate-pulse');
+                        }
+                    } else {
+                        elements.value.textContent = 
+                            stat === 'coins' ? `¥${this.game.stats[stat]}` : 
+                            stat === 'patents' ? `${this.game.stats[stat]}` : 
+                            this.game.phase;
+                    }
+                }
+                
+                this.dayCounter.textContent = `Day ${this.game.stats['days']}`;
+                this.eventDay.textContent = `Day ${this.game.stats['days']}`;
+            }
+            
+            // 触发新事件
+            triggerNewEvent() {
+                this.currentEvent = this.game.triggerRandomEvent();
+                if (!this.currentEvent) {
+                    this.showEnding("恭喜完成所有阶段挑战！");
+                    return;
+                }
+                
+                // 重置选中的选项索引
+                this.selectedOptionIndex = 0;
+                
+                // 更新UI
+                this.updateStatusDisplay();
+                this.renderEvent();
+                this.renderAchievements();
+            }
+            
+            // 渲染事件
+            renderEvent() {
+                // 处理事件描述中的换行
+                const description = this.currentEvent.desc.replace(/\n/g, '<br>');
+                this.eventDescription.innerHTML = description;
+                
+                // 清空选项容器
+                this.optionsContainer.innerHTML = '';
+                
+                // 创建选项按钮
+                const optionKeys = Object.keys(this.currentEvent.options);
+                for (let i = 0; i < optionKeys.length; i++) {
+                    const optionKey = optionKeys[i];
+                    const optionData = this.currentEvent.options[optionKey];
+                    
+                    const optionButton = document.createElement('button');
+                    optionButton.className = `btn-option ${optionKey === 'A' ? 'bg-primary' : 'bg-secondary'} ${i === this.selectedOptionIndex ? 'btn-selected' : ''}`;
+                    optionButton.innerHTML = `${optionKey}. ${optionData.text || '选择'}`;
+                    optionButton.dataset.index = i;
+                    
+                    // 添加按钮点击事件
+                    optionButton.addEventListener('click', () => this.handleChoice(optionKey));
+                    
+                    this.optionsContainer.appendChild(optionButton);
+                }
+            }
+            
+            // 渲染成就
+            renderAchievements() {
+                this.achievementsList.innerHTML = '';
+                
+                for (const achievement of this.game.achievements) {
+                    const badge = document.createElement('span');
+                    badge.className = 'achievement-badge';
+                    badge.innerHTML = `<i class="fa fa-trophy mr-1"></i>${achievement}`;
+                    this.achievementsList.appendChild(badge);
+                }
+            }
+            
+            // 处理选项选择
+            handleChoice(choiceKey) {
+                const option = this.currentEvent.options[choiceKey];
+                
+                // 应用效果
+                for (const [stat, value] of Object.entries(option.effect || {})) {
+                    this.game.modifyStat(stat, value);
+                }
+                
+                // 检查是否获得成就
+                if (option.achievement) {
+                    this.game.achievements.add(option.achievement);
+                }
+                
+                // 增加天数
+                this.game.stats['days']++;
+                
+                // 检查是否有结局
+                const ending = this.game.checkEnding();
+                if (ending) {
+                    this.showEnding(ending);
+                    return;
+                }
+                
+                // 触发下一个事件
+                this.triggerNewEvent();
+            }
+            
+            // 显示结局
+            showEnding(text) {
+                this.endingText.textContent = text;
+                this.endingModal.classList.remove('hidden');
+            }
+            
+            // 重新开始游戏
+            restartGame() {
+                this.game = new HuaweiSimulatorPro();
+                this.endingModal.classList.add('hidden');
+                this.triggerNewEvent();
+            }
+            
+            // 处理键盘事件
+            handleKeydown(e) {
+                const optionButtons = Array.from(this.optionsContainer.querySelectorAll('button'));
+                
+                if (optionButtons.length === 0) return;
+                
+                // 上下箭头导航
+                if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    this.selectedOptionIndex = (this.selectedOptionIndex - 1 + optionButtons.length) % optionButtons.length;
+                    this.updateSelectedOption();
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    this.selectedOptionIndex = (this.selectedOptionIndex + 1) % optionButtons.length;
+                    this.updateSelectedOption();
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const selectedButton = optionButtons[this.selectedOptionIndex];
+                    if (selectedButton) {
+                        const choiceKey = selectedButton.textContent.charAt(0);
+                        this.handleChoice(choiceKey);
+                    }
+                }
+            }
+            
+            // 更新选中的选项样式
+            updateSelectedOption() {
+                const optionButtons = this.optionsContainer.querySelectorAll('button');
+                
+                optionButtons.forEach((button, index) => {
+                    if (index === this.selectedOptionIndex) {
+                        button.classList.add('btn-selected');
+                    } else {
+                        button.classList.remove('btn-selected');
+                    }
+                });
+            }
+        }
+
+        // 初始化游戏
+        document.addEventListener('DOMContentLoaded', () => {
+            const game = new HuaweiSimulatorPro();
+            const ui = new HuaweiUIController(game);
+        });
+    </script>
+</body>
+</html>
+    
