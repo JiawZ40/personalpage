@@ -212,6 +212,26 @@
             margin: 20px 0;
             scrollbar-width: thin;
             scrollbar-color: var(--accent) transparent;
+            min-height: 90px; /* 确保有足够高度 */
+        }
+        
+        /* 自定义滚动条样式 */
+        .state-timeline::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .state-timeline::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .state-timeline::-webkit-scrollbar-thumb {
+            background: rgba(100, 255, 218, 0.3);
+            border-radius: 10px;
+        }
+        
+        .state-timeline::-webkit-scrollbar-thumb:hover {
+            background: rgba(100, 255, 218, 0.5);
         }
         
         .state-box {
@@ -222,6 +242,7 @@
             text-align: center;
             position: relative;
             transition: all 0.3s ease;
+            flex-shrink: 0; /* 防止被压缩 */
         }
         
         .state-box.active {
@@ -399,6 +420,20 @@
             .btn {
                 width: 100%;
                 justify-content: center;
+            }
+            
+            /* 移动端状态时间线优化 */
+            .state-box {
+                min-width: 100px;
+                padding: 10px;
+            }
+            
+            .state-title {
+                font-size: 0.9rem;
+            }
+            
+            .state-value {
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -649,7 +684,7 @@
                     linear: {
                         S: [[1.0, 0.0], [0.0, 1.0]] // 初始状态矩阵
                     }
-                } // 修复了配置对象的语法错误，添加了缺失的右括号
+                }
             };
 
             // 生成模拟数据
@@ -702,6 +737,14 @@
                     
                     container.appendChild(stateBox);
                 });
+                
+                // 自动滚动到活动状态
+                setTimeout(() => {
+                    const activeBox = container.querySelector('.state-box.active');
+                    if (activeBox) {
+                        activeBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 100);
             }
 
             // 更新性能指标
@@ -779,7 +822,7 @@
                     setTimeout(() => cell.classList.remove('matrix-active'), 1000);
                 });
                 
-                // 模拟状态矩阵更新（修复了计算逻辑）
+                // 模拟状态矩阵更新
                 const activeIndices = [];
                 for (let i = 0; i < config.headDim; i++) {
                     for (let j = 0; j < config.headDim; j++) {
@@ -881,4 +924,4 @@
         });
     </script>
 </body>
-</html>    
+</html>
