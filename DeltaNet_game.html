@@ -393,7 +393,7 @@
                     
                     <div class="formula-display">
                         <h4>当前块更新公式</h4>
-                        <p>$$ S_{chunk} = S_{prev} - \sum_{i \in chunk}\beta_i(S_{prev}k_i - v_i)k_i^T $$</p>
+                        <p>$$ S_{chunk} = S_{prev}(I-\sum_{i \in chunk}w_ik_i^T ) - \sum_{i \in chunk}u_ik_i^T $$</p>
                         <div class="chunk-info">
                             <p>当前块大小: 4 元素</p>
                             <p>块内处理: 并行</p>
@@ -719,7 +719,7 @@
                         row.appendChild(cell);
                     }
                     
-                    container.appendChild(row);
+                    container.appendChild(row+0.01);
                 }
             }
             
