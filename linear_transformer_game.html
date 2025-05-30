@@ -364,6 +364,7 @@
             const container = canvas.parentElement;
             canvas.width = container.clientWidth;
             canvas.height = 400;
+            drawAnimation(); // 重绘画布
         }
         
         // 初始调整尺寸
@@ -375,6 +376,7 @@
         let dimension = 2;
         let isPlaying = false;
         let animationId = null;
+        let S_prev = []; // 初始化前一个状态矩阵
         
         // 生成随机向量
         function generateVector(dim) {
@@ -504,16 +506,19 @@
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2 + 20;
             
+            // 调整间距以避免重叠
+            const spacing = 50;
+            
             // 绘制状态矩阵 S_t
             drawMatrix(centerX - 100, centerY - 60, S, `S_t`);
             
             // 绘制输入向量
-            drawVector(centerX - 250, centerY - 30, v, `v_${currentStep}`, '#FF6347');
-            drawVector(centerX - 250, centerY + 50, k, `k_${currentStep}`, '#32CD32');
+            drawVector(centerX - 250, centerY - 60, v, `v_${currentStep}`, '#FF6347');
+            drawVector(centerX - 250, centerY + spacing, k, `k_${currentStep}`, '#32CD32');
             
             // 绘制外积操作
-            drawText('×', centerX - 180, centerY + 10, '#FFD700', 24);
-            drawText('v·kᵀ', centerX - 180, centerY + 40, '#FFD700', 18);
+            drawText('×', centerX - 180, centerY - 10, '#FFD700', 24);
+            drawText('v·kᵀ', centerX - 180, centerY + 20, '#FFD700', 18);
             
             // 绘制外积结果
             const vk = v.map(vi => k.map(kj => (vi * kj).toFixed(1)));
@@ -524,38 +529,38 @@
             
             // 绘制前一个状态矩阵
             if (currentStep > 1) {
-                drawMatrix(centerX + 20, centerY - 60, S_prev, `S_{t-1}`, 'rgba(0, 191, 255, 0.7)');
+                drawMatrix(centerX + 60, centerY - 60, S_prev, `S_{t-1}`, 'rgba(0, 191, 255, 0.7)');
             } else {
-                drawMatrix(centerX + 20, centerY - 60, 
+                drawMatrix(centerX + 60, centerY - 60, 
                     Array(dimension).fill().map(() => Array(dimension).fill('0')), 
                     `S_{0}`, 'rgba(0, 191, 255, 0.7)');
             }
             
             // 绘制输出部分
-            drawVector(centerX + 200, centerY - 30, q, `q_${currentStep}`, '#9370DB');
-            drawText('=', centerX + 150, centerY - 10, '#FFFFFF', 30);
+            drawVector(centerX + 220, centerY - 60, q, `q_${currentStep}`, '#9370DB');
+            drawText('=', centerX + 180, centerY - 30, '#FFFFFF', 30);
             
             // 计算输出 o_t = S_t * q_t
             const o = Array(dimension).fill(0);
             for (let i = 0; i < dimension; i++) {
                 for (let j = 0; j < dimension; j++) {
-                    o[i] += S[i][j] * q[j];
+                    o[i] += parseFloat(S[i][j]) * parseFloat(q[j]);
                 }
                 o[i] = o[i].toFixed(1);
             }
             
-            drawVector(centerX + 280, centerY - 30, o, `o_${currentStep}`, '#FF69B4');
+            drawVector(centerX + 280, centerY - 60, o, `o_${currentStep}`, '#FF69B4');
             
             // 绘制箭头表示流程
             if (currentStep > 1) {
-                drawArrow(centerX + 120, centerY - 30, centerX + 20, centerY - 30, 'rgba(0, 191, 255, 0.7)');
+                drawArrow(centerX + 160, centerY - 30, centerX + 60, centerY - 30, 'rgba(0, 191, 255, 0.7)');
             }
             
-            drawArrow(centerX - 200, centerY - 30, centerX - 150, centerY - 30, '#FF6347');
-            drawArrow(centerX - 200, centerY + 50, centerX - 150, centerY + 10, '#32CD32');
+            drawArrow(centerX - 200, centerY - 45, centerX - 150, centerY - 45, '#FF6347');
+            drawArrow(centerX - 200, centerY + spacing + 15, centerX - 150, centerY + 10, '#32CD32');
             drawArrow(centerX - 80, centerY + 20, centerX - 20, centerY - 10, '#FFD700');
-            drawArrow(centerX + 20, centerY - 90, centerX - 100, centerY - 90, '#00bfff');
-            drawArrow(centerX + 120, centerY - 30, centerX + 150, centerY - 30, '#9370DB');
+            drawArrow(centerX + 60, centerY - 90, centerX - 100, centerY - 90, '#00bfff');
+            drawArrow(centerX + 180, centerY - 60, centerX + 200, centerY - 60, '#9370DB');
             
             // 绘制递归公式
             drawText(`递归公式: S_t = S_{t-1} + v_t·k_tᵀ`, centerX, centerY + 100, '#a0d2eb', 18);
@@ -571,7 +576,7 @@
             const vk = Array(dimension).fill().map(() => Array(dimension).fill(0));
             for (let i = 0; i < dimension; i++) {
                 for (let j = 0; j < dimension; j++) {
-                    vk[i][j] = (v[i] * k[j]).toFixed(1);
+                    vk[i][j] = (parseFloat(v[i]) * parseFloat(k[j])).toFixed(1);
                 }
             }
             
@@ -590,7 +595,6 @@
         
         // 重置动画
         function resetAnimation() {
-            currentStep = 1;
             S = Array(dimension).fill().map(() => Array(dimension).fill(0));
             q = generateVector(dimension);
             k = generateVector(dimension);
@@ -640,7 +644,7 @@
         document.getElementById('auto-btn').addEventListener('click', function() {
             if (isPlaying) {
                 isPlaying = false;
-                cancelAnimationFrame(animationId);
+                clearTimeout(animationId);
                 this.textContent = '自动播放';
             } else {
                 isPlaying = true;
@@ -666,7 +670,6 @@
         }
         
         // 初始化
-        let S_prev;
         resetAnimation();
     </script>
 </body>
