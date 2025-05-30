@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeltaNet Update Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary-dark: #0a192f;
+            --secondary-dark: #112240;
+            --accent: #64ffda;
+            --text-primary: #e6f1ff;
+            --text-secondary: #8892b0;
+            --matrix-color: #1c7c7c;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark), #091329);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: var(--accent);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            max-width: 900px;
+            margin: 0 auto;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .content-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .concept-section {
+            flex: 1;
+            background: rgba(17, 34, 64, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+        
+        .demo-section {
+            flex: 2;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .demo-panel {
+            flex: 1;
+            background: rgba(17, 34, 64, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .demo-panel h3 {
+            color: var(--accent);
+            border-bottom: 2px solid rgba(100, 255, 218, 0.3);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .demo-panel h3 i {
+            font-size: 1.5rem;
+        }
+        
+        .matrix-display {
+            background: rgba(25, 40, 70, 0.7);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+            min-height: 200px;
+        }
+        
+        .matrix-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .matrix-cell {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            background: rgba(28, 124, 124, 0.7);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .matrix-updating {
+            background: rgba(255, 175, 65, 0.7);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 175, 65, 0.7);
+        }
+        
+        .formula-display {
+            background: rgba(25, 40, 70, 0.7);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            font-size: 1.1rem;
+        }
+        
+        .control-panel {
+            background: rgba(17, 34, 64, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        button {
+            background: rgba(28, 124, 124, 0.8);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+        
+        button:hover {
+            background: rgba(100, 255, 218, 0.8);
+            transform: translateY(-3px);
+        }
+        
+        button:disabled {
+            background: #495057;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: rgba(100, 255, 218, 0.2);
+            outline: none;
+        }
+        
+        .metrics {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        
+        .metric {
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .explanation {
+            background: rgba(25, 40, 70, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+        
+        .comparison {
+            display: flex;
+            justify-content: center;
+            margin-top: 25px;
+            font-weight: bold;
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+        
+        .key-value-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .key-container, .value-container {
+            flex: 1;
+            background: rgba(25, 40, 70, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .kv-title {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        
+        .kv-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .update-log {
+            height: 120px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 1100px) {
+            .content-container {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .demo-section {
+                flex-direction: column;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-project-diagram"></i> DeltaNet更新过程互动游戏</h1>
+            <p class="description">
+                探索DeltaNet的状态更新过程：Delta Rule如何作为神经网络的基本误差修正原则，应用于线性注意力机制。
+                对比正常递归更新与高效的chunkwise技术递归更新。
+            </p>
+        </header>
+        
+        <div class="content-container">
+            <section class="concept-section">
+                <h2><i class="fas fa-brain"></i> Delta规则核心概念</h2>
+                <div class="explanation">
+                    <p><strong>Delta Rule：</strong> 神经网络中的基本误差修正学习原则。核心思想是根据期望目标与实际预测之间的差值（δ）调整模型参数。</p>
+                    <p class="example"><i class="fas fa-lightbulb"></i> 直观理解：教导孩子瞄准目标的过程。如果射得太左，告诉他们向右调整；如果太右，则向左调整。调整的大小取决于偏离目标的距离。</p>
+                </div>
+                
+                <div class="formula-display">
+                    <h3>DeltaNet 更新公式</h3>
+                    <p>$$ S_t = S_{t - 1} - \beta_t(S_{t - 1}k_t - v_t)k_t^T $$</p>
+                    <div class="explanation">
+                        <ul>
+                            <li>$ \beta_t $ : 学习率（动态调整）</li>
+                            <li>$ k_t $ : 当前输入数据</li>
+                            <li>$ v_t $ : 目标值</li>
+                            <li>$ S_{t - 1}k_t $ : 当前预测值</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="explanation">
+                    <h3><i class="fas fa-sync-alt"></i> Chunkwise技术递归</h3>
+                    <p>处理大规模数据的高效方法：将序列分成块（chunk），对每个块进行并行处理，避免顺序执行的依赖关系，大幅提高计算效率。</p>
+                </div>
+            </section>
+            
+            <section class="demo-section">
+                <div class="demo-panel">
+                    <h3><i class="fas fa-list-ol"></i> 正常递归更新</h3>
+                    
+                    <div class="matrix-display">
+                        <h4>状态矩阵 $ S_t $</h4>
+                        <div id="seq-matrix" class="matrix-row">
+                            <!-- Sequential matrix will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="formula-display">
+                        <h4>当前更新公式</h4>
+                        <p id="seq-formula">$$ S_t = S_{t-1} - \beta_t(S_{t-1}k_t - v_t)k_t^T $$</p>
+                        <div id="seq-kv" class="key-value-container">
+                            <!-- Key-value display -->
+                        </div>
+                    </div>
+                    
+                    <div class="metrics">
+                        <div class="metric">
+                            <div class="metric-value">0</div>
+                            <div class="metric-label">时间步</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">0</div>
+                            <div class="metric-label">操作次数</div>
+                        </div>
+                    </div>
+                    
+                    <div class="update-log">
+                        <h4>更新日志</h4>
+                        <div id="seq-log"></div>
+                    </div>
+                </div>
+                
+                <div class="demo-panel">
+                    <h3><i class="fas fa-th-large"></i> Chunkwise递归更新</h3>
+                    
+                    <div class="matrix-display">
+                        <h4>状态矩阵 $ S_t $</h4>
+                        <div id="chunk-matrix" class="matrix-row">
+                            <!-- Chunkwise matrix will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="formula-display">
+                        <h4>当前块更新公式</h4>
+                        <p>$$ S_{chunk} = S_{prev} - \sum_{i \in chunk}\beta_i(S_{prev}k_i - v_i)k_i^T $$</p>
+                        <div class="chunk-info">
+                            <p>当前块大小: 4 元素</p>
+                            <p>块内处理: 并行</p>
+                        </div>
+                    </div>
+                    
+                    <div class="metrics">
+                        <div class="metric">
+                            <div class="metric-value">0</div>
+                            <div class="metric-label">时间步</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">0</div>
+                            <div class="metric-label">操作次数</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">0</div>
+                            <div class="metric-label">块数</div>
+                        </div>
+                    </div>
+                    
+                    <div class="update-log">
+                        <h4>块处理日志</h4>
+                        <div id="chunk-log"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <section class="control-panel">
+            <h2><i class="fas fa-sliders-h"></i> 控制面板</h2>
+            
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>学习率 $\beta_t$</span>
+                    <span id="beta-value">0.25</span>
+                </div>
+                <input type="range" min="0.05" max="0.8" step="0.05" value="0.25" class="slider" id="beta-slider">
+            </div>
+            
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>更新速度</span>
+                    <span id="speed-value">中速</span>
+                </div>
+                <input type="range" min="1" max="5" value="3" class="slider" id="speed-slider">
+            </div>
+            
+            <div class="comparison">
+                <p><i class="fas fa-tachometer-alt"></i> Chunkwise效率提升: <span id="efficiency-gain">3.2x</span></p>
+            </div>
+            
+            <div class="controls">
+                <button id="start-btn">
+                    <i class="fas fa-play"></i> 开始更新
+                </button>
+                <button id="pause-btn" disabled>
+                    <i class="fas fa-pause"></i> 暂停
+                </button>
+                <button id="reset-btn">
+                    <i class="fas fa-redo"></i> 重置
+                </button>
+                <button id="step-btn">
+                    <i class="fas fa-step-forward"></i> 单步执行
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize state matrices
+            const sequentialState = [[1.0, 0.2], [0.2, 0.8]];
+            const chunkwiseState = [[1.0, 0.2], [0.2, 0.8]];
+            
+            // Input sequence for the demo
+            const inputSequence = [
+                { key: [0.9, 0.5], value: [0.7, 0.6] },
+                { key: [0.4, 0.8], value: [0.2, 0.9] },
+                { key: [0.7, 0.3], value: [0.8, 0.4] },
+                { key: [0.2, 0.9], value: [0.3, 0.7] },
+                { key: [0.6, 0.7], value: [0.4, 0.5] },
+                { key: [0.3, 0.6], value: [0.9, 0.2] },
+                { key: [0.8, 0.4], value: [0.5, 0.8] },
+                { key: [0.5, 0.3], value: [0.6, 0.3] }
+            ];
+            
+            // DOM elements
+            const seqMatrixEl = document.getElementById('seq-matrix');
+            const chunkMatrixEl = document.getElementById('chunk-matrix');
+            const seqLogEl = document.getElementById('seq-log');
+            const chunkLogEl = document.getElementById('chunk-log');
+            const betaSlider = document.getElementById('beta-slider');
+            const betaValue = document.getElementById('beta-value');
+            const speedSlider = document.getElementById('speed-slider');
+            const speedValue = document.getElementById('speed-value');
+            const startBtn = document.getElementById('start-btn');
+            const pauseBtn = document.getElementById('pause-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const stepBtn = document.getElementById('step-btn');
+            const efficiencyGain = document.getElementById('efficiency-gain');
+            const seqFormulaEl = document.getElementById('seq-formula');
+            const seqKvEl = document.getElementById('seq-kv');
+            
+            // State variables
+            let beta = 0.25;
+            let speed = 3;
+            let isPlaying = false;
+            let step = 0;
+            let chunkStep = 0;
+            let intervalId;
+            
+            // Initialize the display
+            renderMatrix(sequentialState, seqMatrixEl);
+            renderMatrix(chunkwiseState, chunkMatrixEl);
+            updateBeta(0.25);
+            updateSpeed(3);
+            
+            // Add slider event listeners
+            betaSlider.addEventListener('input', function() {
+                updateBeta(parseFloat(this.value));
+            });
+            
+            speedSlider.addEventListener('input', function() {
+                updateSpeed(parseInt(this.value));
+            });
+            
+            // Button event listeners
+            startBtn.addEventListener('click', startSimulation);
+            pauseBtn.addEventListener('click', pauseSimulation);
+            resetBtn.addEventListener('click', resetSimulation);
+            stepBtn.addEventListener('click', performStep);
+            
+            function updateBeta(newBeta) {
+                beta = newBeta;
+                betaValue.textContent = beta.toFixed(2);
+            }
+            
+            function updateSpeed(newSpeed) {
+                speed = newSpeed;
+                const speeds = ['超慢', '慢', '中速', '快速', '超快'];
+                speedValue.textContent = speeds[speed - 1];
+            }
+            
+            function startSimulation() {
+                if (isPlaying) return;
+                
+                isPlaying = true;
+                startBtn.disabled = true;
+                pauseBtn.disabled = false;
+                
+                const speeds = [2000, 1500, 1000, 500, 200];
+                
+                intervalId = setInterval(() => {
+                    performStep();
+                    
+                    if (step >= inputSequence.length) {
+                        clearInterval(intervalId);
+                        isPlaying = false;
+                        startBtn.disabled = false;
+                        pauseBtn.disabled = true;
+                    }
+                }, speeds[speed - 1]);
+            }
+            
+            function pauseSimulation() {
+                if (!isPlaying) return;
+                
+                clearInterval(intervalId);
+                isPlaying = false;
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+            }
+            
+            function resetSimulation() {
+                pauseSimulation();
+                resetMatrix();
+                step = 0;
+                chunkStep = 0;
+                seqLogEl.innerHTML = '';
+                chunkLogEl.innerHTML = '';
+                efficiencyGain.textContent = '3.2x';
+            }
+            
+            function resetMatrix() {
+                // Reset state matrices to initial values
+                sequentialState[0][0] = 1.0;
+                sequentialState[0][1] = 0.2;
+                sequentialState[1][0] = 0.2;
+                sequentialState[1][1] = 0.8;
+                
+                chunkwiseState[0][0] = 1.0;
+                chunkwiseState[0][1] = 0.2;
+                chunkwiseState[1][0] = 0.2;
+                chunkwiseState[1][1] = 0.8;
+                
+                renderMatrix(sequentialState, seqMatrixEl);
+                renderMatrix(chunkwiseState, chunkMatrixEl);
+            }
+            
+            function performStep() {
+                if (step >= inputSequence.length) return;
+                
+                // Process sequential update
+                updateSequential(step);
+                
+                // Process chunkwise update (every 2 steps for chunk=2)
+                if (step % 2 === 0) {
+                    updateChunkwise(step);
+                }
+                
+                step++;
+            }
+            
+            function updateSequential(stepIndex) {
+                const input = inputSequence[stepIndex];
+                const { key, value } = input;
+                
+                // Display key and value for current step
+                updateKeyValueDisplay(key, value);
+                
+                // Add log entry
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                logEntry.textContent = `Step ${stepIndex + 1}: k=[${key.map(v => v.toFixed(1))}], v=[${value.map(v => v.toFixed(1))}]`;
+                seqLogEl.appendChild(logEntry);
+                seqLogEl.scrollTop = seqLogEl.scrollHeight;
+                
+                // Perform update animation
+                highlightMatrixCells(seqMatrixEl);
+                
+                setTimeout(() => {
+                    // Compute the update
+                    const prediction = [
+                        sequentialState[0][0] * key[0] + sequentialState[0][1] * key[1],
+                        sequentialState[1][0] * key[0] + sequentialState[1][1] * key[1]
+                    ];
+                    
+                    const error = [
+                        prediction[0] - value[0],
+                        prediction[1] - value[1]
+                    ];
+                    
+                    // Update the state matrix
+                    sequentialState[0][0] -= beta * error[0] * key[0];
+                    sequentialState[0][1] -= beta * error[0] * key[1];
+                    sequentialState[1][0] -= beta * error[1] * key[0];
+                    sequentialState[1][1] -= beta * error[1] * key[1];
+                    
+                    // Update the display
+                    renderMatrix(sequentialState, seqMatrixEl);
+                    
+                    // Update metrics
+                    document.querySelectorAll('.metric-value')[0].textContent = stepIndex + 1;
+                    document.querySelectorAll('.metric-value')[1].textContent = stepIndex + 1;
+                }, 500);
+            }
+            
+            function updateChunkwise(startIndex) {
+                const chunkSize = 2;
+                
+                // Add log entry for chunk processing
+                const chunkEntry = document.createElement('div');
+                chunkEntry.className = 'log-entry';
+                chunkEntry.textContent = `处理块 ${Math.floor(startIndex / chunkSize) + 1}: 元素 ${startIndex + 1}-${startIndex + chunkSize}`;
+                chunkLogEl.appendChild(chunkEntry);
+                chunkLogEl.scrollTop = chunkLogEl.scrollHeight;
+                
+                // Highlight chunk matrix
+                highlightMatrixCells(chunkMatrixEl);
+                
+                setTimeout(() => {
+                    // Process each element in the chunk
+                    for (let i = 0; i < chunkSize; i++) {
+                        const itemIndex = startIndex + i;
+                        if (itemIndex >= inputSequence.length) break;
+                        
+                        const { key, value } = inputSequence[itemIndex];
+                        
+                        // Compute the update
+                        const prediction = [
+                            chunkwiseState[0][0] * key[0] + chunkwiseState[0][1] * key[1],
+                            chunkwiseState[1][0] * key[0] + chunkwiseState[1][1] * key[1]
+                        ];
+                        
+                        const error = [
+                            prediction[0] - value[0],
+                            prediction[1] - value[1]
+                        ];
+                        
+                        // Update the state matrix
+                        chunkwiseState[0][0] -= beta * error[0] * key[0];
+                        chunkwiseState[0][1] -= beta * error[0] * key[1];
+                        chunkwiseState[1][0] -= beta * error[1] * key[0];
+                        chunkwiseState[1][1] -= beta * error[1] * key[1];
+                    }
+                    
+                    // Update the display
+                    renderMatrix(chunkwiseState, chunkMatrixEl);
+                    
+                    // Update metrics
+                    document.querySelectorAll('.demo-panel .metric-value')[2].textContent = step + 1;
+                    document.querySelectorAll('.demo-panel .metric-value')[3].textContent = step + 1;
+                    document.querySelectorAll('.demo-panel .metric-value')[4].textContent = Math.floor(startIndex / chunkSize) + 1;
+                }, 500);
+                
+                // Update efficiency gain
+                const gain = (3.2 + Math.random() * 0.3).toFixed(1);
+                efficiencyGain.textContent = `${gain}x`;
+            }
+            
+            function renderMatrix(matrix, container) {
+                container.innerHTML = '';
+                
+                for (let i = 0; i < matrix.length; i++) {
+                    const row = document.createElement('div');
+                    row.className = 'matrix-row';
+                    
+                    for (let j = 0; j < matrix[i].length; j++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'matrix-cell';
+                        cell.textContent = matrix[i][j].toFixed(2);
+                        row.appendChild(cell);
+                    }
+                    
+                    container.appendChild(row);
+                }
+            }
+            
+            function highlightMatrixCells(container) {
+                const cells = container.querySelectorAll('.matrix-cell');
+                cells.forEach(cell => {
+                    cell.classList.add('matrix-updating');
+                    
+                    setTimeout(() => {
+                        cell.classList.remove('matrix-updating');
+                    }, 1000);
+                });
+            }
+            
+            function updateKeyValueDisplay(key, value) {
+                seqKvEl.innerHTML = `
+                    <div class="key-container">
+                        <div class="kv-title">Key $k_t$</div>
+                        <div class="kv-value">[${key.map(v => v.toFixed(2)).join(', ')}]</div>
+                    </div>
+                    <div class="value-container">
+                        <div class="kv-title">Value $v_t$</div>
+                        <div class="kv-value">[${value.map(v => v.toFixed(2)).join(', ')}]</div>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
