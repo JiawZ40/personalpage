@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>线性注意力递归过程动画演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e6e6e6;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 15, 46, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            border: 1px solid rgba(64, 224, 208, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #40e0d0, #5d8aa8, #00bfff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0d2eb;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .content {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .animation-container {
+            flex: 1;
+            min-width: 600px;
+            background: rgba(0, 20, 40, 0.85);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(64, 224, 208, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .animation-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #40e0d0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(64, 224, 208, 0.3);
+        }
+        
+        #animation-canvas {
+            background: #0a1929;
+            border-radius: 10px;
+            width: 100%;
+            height: 400px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(64, 224, 208, 0.2);
+        }
+        
+        .info-panel {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(0, 20, 40, 0.85);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(64, 224, 208, 0.2);
+        }
+        
+        .info-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #40e0d0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(64, 224, 208, 0.3);
+        }
+        
+        .formula {
+            background: rgba(10, 25, 47, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #40e0d0;
+            font-family: 'Consolas', monospace;
+            overflow-x: auto;
+        }
+        
+        .formula-title {
+            color: #5d8aa8;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .formula-content {
+            color: #a0d2eb;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .highlight {
+            color: #00bfff;
+            font-weight: bold;
+        }
+        
+        .explanation {
+            margin: 15px 0;
+            line-height: 1.7;
+            color: #c2d6e6;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+            background: rgba(10, 25, 47, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(64, 224, 208, 0.2);
+        }
+        
+        .control-title {
+            color: #5d8aa8;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .slider-container {
+            margin: 10px 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #a0d2eb;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            background: #0a1929;
+            border-radius: 4px;
+            outline: none;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, #008b8b, #00688b);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:hover {
+            background: linear-gradient(135deg, #00a0a0, #0080a0);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(10, 25, 47, 0.7);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            color: #00bfff;
+            border: 1px solid rgba(64, 224, 208, 0.2);
+        }
+        
+        .time-step {
+            font-weight: bold;
+            color: #40e0d0;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            color: #5d8aa8;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .animation-container, .info-panel {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>线性注意力递归过程动画演示</h1>
+            <p class="subtitle">可视化展示线性注意力在迭代推理时如何通过状态矩阵S_t的递归更新实现高效计算</p>
+        </header>
+        
+        <div class="content">
+            <div class="animation-container">
+                <h2 class="animation-title">递归过程动画演示</h2>
+                <canvas id="animation-canvas"></canvas>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <div class="control-title">动画控制</div>
+                        <div class="slider-container">
+                            <label for="time-step">时间步: <span id="time-step-value">t=1</span></label>
+                            <input type="range" id="time-step" min="1" max="5" value="1">
+                        </div>
+                        
+                        <div class="slider-container">
+                            <label for="dimension">维度 (d): <span id="dimension-value">2</span></label>
+                            <input type="range" id="dimension" min="2" max="4" value="2">
+                        </div>
+                        
+                        <div class="buttons">
+                            <button id="prev-btn">上一步</button>
+                            <button id="next-btn">下一步</button>
+                            <button id="reset-btn">重置</button>
+                            <button id="auto-btn">自动播放</button>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <div class="control-title">当前状态</div>
+                        <div class="status">
+                            当前时间步: <span class="time-step">t=1</span>
+                        </div>
+                        <div class="status">
+                            状态矩阵 S<sub>t</sub> 维度: <span id="dim-display">d×d = 2×2</span>
+                        </div>
+                        <div class="status">
+                            计算复杂度: <span class="highlight">O(d²)</span> 而非标准注意力的 O(L×d)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-panel">
+                <h2 class="info-title">线性注意力原理</h2>
+                
+                <div class="formula">
+                    <div class="formula-title">线性注意力核心思想</div>
+                    <div class="formula-content">
+                        移除 softmax 操作符，利用矩阵乘法的结合律实现计算重排：
+                        <br>
+                        𝐨<sub>t</sub> = ∑<sub>j=1</sub><sup>t</sup> (𝐪<sub>t</sub><sup>⊤</sup>𝐤<sub>j</sub>)𝐯<sub>j</sub> 
+                        = (∑<sub>j=1</sub><sup>t</sup> 𝐯<sub>j</sub>𝐤<sub>j</sub><sup>⊤</sup>) 𝐪<sub>t</sub>
+                    </div>
+                </div>
+                
+                <div class="formula">
+                    <div class="formula-title">递归状态定义</div>
+                    <div class="formula-content">
+                        定义状态矩阵：
+                        <br>
+                        𝐒<sub>t</sub> = ∑<sub>j=1</sub><sup>t</sup> 𝐯<sub>j</sub>𝐤<sub>j</sub><sup>⊤</sup> ∈ ℝ<sup>d×d</sup>
+                        <br>
+                        递归更新公式：
+                        <br>
+                        𝐒<sub>t</sub> = 𝐒<sub>t-1</sub> + 𝐯<sub>t</sub>𝐤<sub>t</sub><sup>⊤</sup>
+                        <br>
+                        𝐨<sub>t</sub> = 𝐒<sub>t</sub>𝐪<sub>t</sub>
+                    </div>
+                </div>
+                
+                <div class="explanation">
+                    <p>线性注意力的核心创新在于将原本需要维护整个历史序列（复杂度 O(L)）的注意力机制，转换为维护一个固定大小的状态矩阵 𝐒<sub>t</sub>（复杂度 O(d²)）。</p>
+                    
+                    <p>在递归过程中：</p>
+                    <ul>
+                        <li>每个时间步 t 接收新的 (𝐪<sub>t</sub>, 𝐤<sub>t</sub>, 𝐯<sub>t</sub>) 三元组</li>
+                        <li>计算外积 𝐯<sub>t</sub>𝐤<sub>t</sub><sup>⊤</sup>（维度 d×d）</li>
+                        <li>将外积累加到状态矩阵 𝐒<sub>t</sub> = 𝐒<sub>t-1</sub> + 𝐯<sub>t</sub>𝐤<sub>t</sub><sup>⊤</sup></li>
+                        <li>输出 𝐨<sub>t</sub> = 𝐒<sub>t</sub>𝐪<sub>t</sub></li>
+                    </ul>
+                    
+                    <p>这种递归形式使线性注意力本质上成为一个<strong class="highlight">线性RNN</strong>，具有固定大小的状态，显著降低了自回归生成时的计算复杂度。</p>
+                </div>
+                
+                <div class="formula">
+                    <div class="formula-title">复杂度分析</div>
+                    <div class="formula-content">
+                        标准注意力: <span class="highlight">O(L²d)</span> 训练, <span class="highlight">O(Ld)</span> 推理<br>
+                        线性注意力: <span class="highlight">O(Ld²)</span> 训练, <span class="highlight">O(d²)</span> 推理
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            线性注意力递归过程演示 | 基于用户提供的技术说明 | 复杂度从 O(L) 降至 O(d²)
+        </div>
+    </div>
+
+    <script>
+        // 获取Canvas元素和上下文
+        const canvas = document.getElementById('animation-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // 设置Canvas尺寸
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = 400;
+        }
+        
+        // 初始调整尺寸
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // 状态变量
+        let currentStep = 1;
+        let dimension = 2;
+        let isPlaying = false;
+        let animationId = null;
+        
+        // 生成随机向量
+        function generateVector(dim) {
+            return Array.from({length: dim}, () => (Math.random() * 2 - 1).toFixed(1));
+        }
+        
+        // 生成随机矩阵
+        function generateMatrix(rows, cols) {
+            return Array.from({length: rows}, () => 
+                Array.from({length: cols}, () => (Math.random() * 2 - 1).toFixed(1))
+            );
+        }
+        
+        // 初始化状态
+        let S = Array(dimension).fill().map(() => Array(dimension).fill(0));
+        let q = generateVector(dimension);
+        let k = generateVector(dimension);
+        let v = generateVector(dimension);
+        
+        // 绘制向量
+        function drawVector(x, y, vector, label, color = '#40e0d0') {
+            const width = 40;
+            const height = vector.length * 30;
+            
+            // 绘制外框
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x, y, width, height);
+            
+            // 绘制向量元素
+            ctx.fillStyle = color;
+            ctx.font = '16px Consolas';
+            ctx.textAlign = 'center';
+            
+            for (let i = 0; i < vector.length; i++) {
+                ctx.fillText(vector[i], x + width/2, y + 25 + i*30);
+            }
+            
+            // 绘制标签
+            ctx.fillStyle = '#a0d2eb';
+            ctx.font = 'bold 18px Arial';
+            ctx.fillText(label, x + width/2, y - 10);
+        }
+        
+        // 绘制矩阵
+        function drawMatrix(x, y, matrix, label, color = '#00bfff') {
+            const rows = matrix.length;
+            const cols = matrix[0].length;
+            const cellWidth = 40;
+            const cellHeight = 30;
+            const width = cols * cellWidth;
+            const height = rows * cellHeight;
+            
+            // 绘制外框
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x, y, width, height);
+            
+            // 绘制网格和元素
+            ctx.fillStyle = color;
+            ctx.font = '16px Consolas';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const cellX = x + j * cellWidth;
+                    const cellY = y + i * cellHeight;
+                    
+                    // 绘制单元格
+                    ctx.strokeStyle = 'rgba(160, 210, 235, 0.3)';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(cellX, cellY, cellWidth, cellHeight);
+                    
+                    // 绘制元素
+                    ctx.fillStyle = color;
+                    ctx.fillText(matrix[i][j], cellX + cellWidth/2, cellY + cellHeight/2);
+                }
+            }
+            
+            // 绘制标签
+            ctx.fillStyle = '#a0d2eb';
+            ctx.font = 'bold 18px Arial';
+            ctx.fillText(label, x + width/2, y - 10);
+        }
+        
+        // 绘制箭头
+        function drawArrow(fromX, fromY, toX, toY, color = '#FFD700') {
+            const headLength = 15;
+            const dx = toX - fromX;
+            const dy = toY - fromY;
+            const angle = Math.atan2(dy, dx);
+            
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.stroke();
+            
+            // 绘制箭头头部
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(toX - headLength * Math.cos(angle - Math.PI/6), toY - headLength * Math.sin(angle - Math.PI/6));
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(toX - headLength * Math.cos(angle + Math.PI/6), toY - headLength * Math.sin(angle + Math.PI/6));
+            ctx.stroke();
+        }
+        
+        // 绘制文本
+        function drawText(text, x, y, color = '#FFFFFF', fontSize = 18, align = 'center') {
+            ctx.fillStyle = color;
+            ctx.font = `${fontSize}px Arial`;
+            ctx.textAlign = align;
+            ctx.fillText(text, x, y);
+        }
+        
+        // 绘制当前时间步的动画
+        function drawAnimation() {
+            // 清除画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制标题
+            drawText(`线性注意力递归过程 (时间步 t = ${currentStep})`, canvas.width/2, 30, '#40e0d0', 20);
+            
+            // 计算位置
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2 + 20;
+            
+            // 绘制状态矩阵 S_t
+            drawMatrix(centerX - 100, centerY - 60, S, `S_t`);
+            
+            // 绘制输入向量
+            drawVector(centerX - 250, centerY - 30, v, `v_${currentStep}`, '#FF6347');
+            drawVector(centerX - 250, centerY + 50, k, `k_${currentStep}`, '#32CD32');
+            
+            // 绘制外积操作
+            drawText('×', centerX - 180, centerY + 10, '#FFD700', 24);
+            drawText('v·kᵀ', centerX - 180, centerY + 40, '#FFD700', 18);
+            
+            // 绘制外积结果
+            const vk = v.map(vi => k.map(kj => (vi * kj).toFixed(1)));
+            drawMatrix(centerX - 120, centerY, vk, `v_${currentStep}·k_${currentStep}ᵀ`, '#FFD700');
+            
+            // 绘制加法操作
+            drawText('+', centerX - 20, centerY - 10, '#FFFFFF', 30);
+            
+            // 绘制前一个状态矩阵
+            if (currentStep > 1) {
+                drawMatrix(centerX + 20, centerY - 60, S_prev, `S_{t-1}`, 'rgba(0, 191, 255, 0.7)');
+            } else {
+                drawMatrix(centerX + 20, centerY - 60, 
+                    Array(dimension).fill().map(() => Array(dimension).fill('0')), 
+                    `S_{0}`, 'rgba(0, 191, 255, 0.7)');
+            }
+            
+            // 绘制输出部分
+            drawVector(centerX + 200, centerY - 30, q, `q_${currentStep}`, '#9370DB');
+            drawText('=', centerX + 150, centerY - 10, '#FFFFFF', 30);
+            
+            // 计算输出 o_t = S_t * q_t
+            const o = Array(dimension).fill(0);
+            for (let i = 0; i < dimension; i++) {
+                for (let j = 0; j < dimension; j++) {
+                    o[i] += S[i][j] * q[j];
+                }
+                o[i] = o[i].toFixed(1);
+            }
+            
+            drawVector(centerX + 280, centerY - 30, o, `o_${currentStep}`, '#FF69B4');
+            
+            // 绘制箭头表示流程
+            if (currentStep > 1) {
+                drawArrow(centerX + 120, centerY - 30, centerX + 20, centerY - 30, 'rgba(0, 191, 255, 0.7)');
+            }
+            
+            drawArrow(centerX - 200, centerY - 30, centerX - 150, centerY - 30, '#FF6347');
+            drawArrow(centerX - 200, centerY + 50, centerX - 150, centerY + 10, '#32CD32');
+            drawArrow(centerX - 80, centerY + 20, centerX - 20, centerY - 10, '#FFD700');
+            drawArrow(centerX + 20, centerY - 90, centerX - 100, centerY - 90, '#00bfff');
+            drawArrow(centerX + 120, centerY - 30, centerX + 150, centerY - 30, '#9370DB');
+            
+            // 绘制递归公式
+            drawText(`递归公式: S_t = S_{t-1} + v_t·k_tᵀ`, centerX, centerY + 100, '#a0d2eb', 18);
+            drawText(`输出: o_t = S_t · q_t`, centerX, centerY + 130, '#a0d2eb', 18);
+        }
+        
+        // 更新状态
+        function updateState() {
+            // 保存前一个状态用于显示
+            S_prev = JSON.parse(JSON.stringify(S));
+            
+            // 计算 v·kᵀ
+            const vk = Array(dimension).fill().map(() => Array(dimension).fill(0));
+            for (let i = 0; i < dimension; i++) {
+                for (let j = 0; j < dimension; j++) {
+                    vk[i][j] = (v[i] * k[j]).toFixed(1);
+                }
+            }
+            
+            // 更新状态矩阵 S_t = S_{t-1} + v·kᵀ
+            for (let i = 0; i < dimension; i++) {
+                for (let j = 0; j < dimension; j++) {
+                    S[i][j] = (parseFloat(S[i][j]) + parseFloat(vk[i][j])).toFixed(1);
+                }
+            }
+            
+            // 生成新的输入向量
+            q = generateVector(dimension);
+            k = generateVector(dimension);
+            v = generateVector(dimension);
+        }
+        
+        // 重置动画
+        function resetAnimation() {
+            currentStep = 1;
+            S = Array(dimension).fill().map(() => Array(dimension).fill(0));
+            q = generateVector(dimension);
+            k = generateVector(dimension);
+            v = generateVector(dimension);
+            updateDisplay();
+            drawAnimation();
+        }
+        
+        // 更新显示
+        function updateDisplay() {
+            document.getElementById('time-step-value').textContent = `t=${currentStep}`;
+            document.getElementById('time-step').value = currentStep;
+            document.getElementById('dimension-value').textContent = dimension;
+            document.getElementById('dim-display').textContent = `d×d = ${dimension}×${dimension}`;
+            document.querySelector('.time-step').textContent = `t=${currentStep}`;
+        }
+        
+        // 事件监听器
+        document.getElementById('time-step').addEventListener('input', function() {
+            currentStep = parseInt(this.value);
+            resetAnimation();
+        });
+        
+        document.getElementById('dimension').addEventListener('input', function() {
+            dimension = parseInt(this.value);
+            resetAnimation();
+        });
+        
+        document.getElementById('prev-btn').addEventListener('click', function() {
+            if (currentStep > 1) {
+                currentStep--;
+                resetAnimation();
+            }
+        });
+        
+        document.getElementById('next-btn').addEventListener('click', function() {
+            if (currentStep < 5) {
+                currentStep++;
+                updateState();
+                updateDisplay();
+                drawAnimation();
+            }
+        });
+        
+        document.getElementById('reset-btn').addEventListener('click', resetAnimation);
+        
+        document.getElementById('auto-btn').addEventListener('click', function() {
+            if (isPlaying) {
+                isPlaying = false;
+                cancelAnimationFrame(animationId);
+                this.textContent = '自动播放';
+            } else {
+                isPlaying = true;
+                this.textContent = '停止播放';
+                autoPlay();
+            }
+        });
+        
+        // 自动播放
+        function autoPlay() {
+            if (!isPlaying) return;
+            
+            if (currentStep < 5) {
+                currentStep++;
+                updateState();
+                updateDisplay();
+                drawAnimation();
+                animationId = setTimeout(autoPlay, 2000);
+            } else {
+                isPlaying = false;
+                document.getElementById('auto-btn').textContent = '自动播放';
+            }
+        }
+        
+        // 初始化
+        let S_prev;
+        resetAnimation();
+    </script>
+</body>
+</html>
