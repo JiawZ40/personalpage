@@ -363,18 +363,27 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             cursor: pointer;
             transition: all 0.3s ease;
+            z-index: 2;
+            opacity: 0;
+            transform: scale(0);
+            animation: nodeAppear 0.5s forwards;
         }
         
-        .causal-node:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+        @keyframes nodeAppear {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
         
         .causal-link {
             position: absolute;
             height: 3px;
             background: rgba(255,255,255,0.8);
-            transform-origin: left;
+            transform-origin: left top;
+            opacity: 0;
+            z-index: 1;
+            transition: all 0.3s;
         }
         
         .attention-matrix {
@@ -391,6 +400,69 @@
             justify-content: center;
             font-size: 0.7rem;
             border-radius: 2px;
+        }
+        
+        .arrow {
+            position: absolute;
+            width: 0; 
+            height: 0; 
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 12px solid #ffcc00;
+            transform-origin: 50% 0;
+            opacity: 0;
+            z-index: 3;
+        }
+        
+        .processing-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s;
+        }
+        
+        .processing-text {
+            color: #ffcc00;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 5px solid rgba(255,255,255,0.1);
+            border-top-color: #ffcc00;
+            animation: spin 1s infinite linear;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .show-processing {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
@@ -564,23 +636,36 @@
                     </div>
                     
                     <div class="attention-info">
-        点击矩阵单元查看事件间关联强度 (值越大表示因果关系越强)
+                        点击矩阵单元查看事件间关联强度 (值越大表示因果关系越强)
                     </div>
                 </div>
                 
                 <div class="transformer-section">
                     <h3>因果关系图</h3>
                     <div class="causal-graph">
-                        <div class="causal-node" style="top: 50px; left: 100px; background: #3498db;">CPU过载</div>
-                        <div class="causal-node" style="top: 50px; left: 350px; background: #e74c3c;">应用服务超时</div>
-                        <div class="causal-node" style="top: 200px; left: 100px; background: #2ecc71;">数据库连接池耗尽</div>
-                        <div class="causal-node" style="top: 200px; left: 350px; background: #9b59b6;">API响应时间延长</div>
-                        <div class="causal-node" style="top: 125px; left: 225px; background: #f1c40f;">网络延迟突增</div>
+                        <div class="processing-animation">
+                            <div class="processing-text">Transformer正在分析因果关系...</div>
+                            <div class="loading-spinner"></div>
+                        </div>
                         
-                        <div class="causal-link" style="width: 250px; top: 75px; left: 170px; transform: rotate(0deg);"></div>
-                        <div class="causal-link" style="width: 185px; top: 112px; left: 170px; transform: rotate(45deg);"></div>
-                        <div class="causal-link" style="width: 185px; top: 112px; left: 265px; transform: rotate(135deg);"></div>
-                        <div class="causal-link" style="width: 250px; top: 200px; left: 170px; transform: rotate(0deg);"></div>
+                        <!-- 节点将在JavaScript中动态创建 -->
+                        <div class="causal-node" style="top: 50px; left: 100px; background: #3498db; animation-delay: 0.2s">CPU过载</div>
+                        <div class="causal-node" style="top: 50px; left: 350px; background: #e74c3c; animation-delay: 0.6s">应用服务超时</div>
+                        <div class="causal-node" style="top: 200px; left: 100px; background: #2ecc71; animation-delay: 0.3s">数据库连接池耗尽</div>
+                        <div class="causal-node" style="top: 200px; left: 350px; background: #9b59b6; animation-delay: 0.5s">API响应时间延长</div>
+                        <div class="causal-node" style="top: 125px; left: 225px; background: #f1c40f; animation-delay: 0.4s">网络延迟突增</div>
+                        
+                        <!-- 连边将在JavaScript中动态创建 -->
+                        <div class="causal-link" id="link1"></div>
+                        <div class="causal-link" id="link2"></div>
+                        <div class="causal-link" id="link3"></div>
+                        <div class="causal-link" id="link4"></div>
+                        
+                        <!-- 箭头将在JavaScript中动态创建 -->
+                        <div class="arrow" id="arrow1"></div>
+                        <div class="arrow" id="arrow2"></div>
+                        <div class="arrow" id="arrow3"></div>
+                        <div class="arrow" id="arrow4"></div>
                     </div>
                 </div>
                 
@@ -642,8 +727,109 @@
             }
         }
         
+        // 创建因果关系箭头动画
+        function createArrow(id, fromX, fromY, toX, toY) {
+            const arrow = document.getElementById(id);
+            if (!arrow) return;
+            
+            // 计算距离和角度
+            const dx = toX - fromX;
+            const dy = toY - fromY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+            
+            // 设置箭头位置和旋转
+            arrow.style.left = (fromX) + 'px';
+            arrow.style.top = (fromY) + 'px';
+            arrow.style.transform = `rotate(${angle}deg)`;
+            
+            // 动画显示
+            setTimeout(() => {
+                arrow.style.opacity = '1';
+                
+                // 动画移动到终点
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 0.05;
+                    if (progress >= 1) {
+                        clearInterval(interval);
+                        // 在终点位置添加一个闪烁效果
+                        arrow.style.opacity = '0.8';
+                        setTimeout(() => {
+                            arrow.style.opacity = '1';
+                        }, 100);
+                    }
+                    const x = fromX + dx * progress;
+                    const y = fromY + dy * progress;
+                    arrow.style.left = x + 'px';
+                    arrow.style.top = y + 'px';
+                }, 30);
+            }, 800);
+        }
+        
+        // 显示连边
+        function showLink(id, fromX, fromY, toX, toY) {
+            const link = document.getElementById(id);
+            if (!link) return;
+            
+            // 计算距离和角度
+            const dx = toX - fromX;
+            const dy = toY - fromY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+            
+            // 设置连边样式
+            link.style.left = fromX + 'px';
+            link.style.top = fromY + 'px';
+            link.style.width = distance + 'px';
+            link.style.transform = `rotate(${angle}deg)`;
+            
+            // 动画效果
+            setTimeout(() => {
+                link.style.opacity = '0.7';
+            }, 700);
+        }
+        
+        // 显示因果图
+        function showCausalGraph() {
+            // 显示节点
+            document.querySelectorAll('.causal-node').forEach(node => {
+                setTimeout(() => {
+                    node.style.opacity = '1';
+                    node.style.transform = 'scale(1)';
+                }, parseFloat(node.style.animationDelay || '0.2') * 1000);
+            });
+            
+            // CPU过载 → 应用服务超时
+            setTimeout(() => {
+                showLink('link1', 170, 75, 320, 75);
+                createArrow('arrow1', 170, 75, 320, 75);
+            }, 1000);
+            
+            // 数据库连接池耗尽 → 应用服务超时
+            setTimeout(() => {
+                showLink('link2', 170, 225, 320, 125);
+                createArrow('arrow2', 170, 225, 320, 125);
+            }, 1300);
+            
+            // 网络延迟突增 → API响应时间延长
+            setTimeout(() => {
+                showLink('link3', 265, 150, 320, 225);
+                createArrow('arrow3', 265, 150, 320, 225);
+            }, 1600);
+            
+            // CPU过载 → API响应时间延长
+            setTimeout(() => {
+                showLink('link4', 170, 75, 320, 225);
+                createArrow('arrow4', 170, 75, 320, 225);
+            }, 1900);
+        }
+        
         // 使用Transformer分析
         function analyzeWithTransformer() {
+            const processing = document.querySelector('.processing-animation');
+            processing.classList.add('show-processing');
+            
             // 动画效果 - 随机改变向量高度
             const vectors = document.querySelectorAll('.vector-fill');
             vectors.forEach(vector => {
@@ -668,7 +854,8 @@
             
             // 显示结果
             setTimeout(() => {
-                alert('Transformer分析完成！发现以下因果关系:\n\n- CPU过载 → 应用服务超时\n- 数据库连接池耗尽 → 应用服务超时\n- 网络延迟突增 → API响应时间延长');
+                // 隐藏处理中动画
+                processing.classList.remove('show-processing');
                 
                 // 高亮显示强因果关系
                 document.querySelectorAll('.attention-cell').forEach(cell => {
@@ -677,10 +864,14 @@
                     }
                 });
                 
-                // 更新因果图
-                document.querySelector('.causal-link').style.backgroundColor = '#ffcc00';
-                document.querySelector('.causal-link').style.boxShadow = '0 0 10px #ffcc00';
-            }, 1500);
+                // 显示因果关系图
+                showCausalGraph();
+                
+                // 显示分析完成消息
+                setTimeout(() => {
+                    alert('Transformer分析完成！发现以下因果关系:\n\n- CPU过载 → 应用服务超时\n- 数据库连接池耗尽 → 应用服务超时\n- 网络延迟突增 → API响应时间延长\n- CPU过载 → API响应时间延长');
+                }, 2500);
+            }, 3000);
         }
         
         // 显示注意力权重信息
