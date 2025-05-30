@@ -109,6 +109,7 @@
             justify-content: center;
             gap: 20px;
             margin-bottom: 15px;
+            flex-wrap: wrap;
         }
         
         .matrix-cell {
@@ -350,12 +351,16 @@
                     
                     <div class="matrix-display">
                         <h4>状态矩阵 $ S_t $</h4>
-                        <div id="seq-matrix" class="matrix-cell">
-                            <div id="seq-matrix" class="matrix-cell">
-                                <div id="seq-matrix" class="matrix-cell">
-                                    <div id="seq-matrix" class="matrix-cell">
+                        <div id="seq-matrix" class="matrix-raw">
+                            <div class="matrix-cell">
+                            <div class="matrix-cell">    
                             <!-- Sequential matrix will be populated here -->
                         </div>
+                        <div id="seq-matrix" class="matrix-raw">
+                            <div class="matrix-cell">
+                            <div class="matrix-cell">    
+                            <!-- Sequential matrix will be populated here -->
+                        </div>        
                     </div>
                     
                     <div class="formula-display">
