@@ -649,6 +649,7 @@
                     linear: {
                         S: [[1.0, 0.0], [0.0, 1.0]] // 初始状态矩阵
                     }
+                } // 修复了配置对象的语法错误，添加了缺失的右括号
             };
 
             // 生成模拟数据
@@ -778,16 +779,16 @@
                     setTimeout(() => cell.classList.remove('matrix-active'), 1000);
                 });
                 
-                // 模拟状态矩阵更新
+                // 模拟状态矩阵更新（修复了计算逻辑）
                 const activeIndices = [];
-                config.stateMatrices.linear.S.forEach((row, i) => {
-                    row.forEach((_, j) => {
-                        // 简单模拟状态更新
-                        config.stateMatrices.linear.S[i][j] = (parseFloat(config.stateMatrices.linear.S[i][j]) + 
-                                                               Math.random() * 0.3 - 0.15).toFixed(2);
+                for (let i = 0; i < config.headDim; i++) {
+                    for (let j = 0; j < config.headDim; j++) {
+                        // 实现 S_t = S_{t-1} + v_t * k_t^T
+                        const update = parseFloat(data.v[i]) * parseFloat(data.k[j]);
+                        config.stateMatrices.linear.S[i][j] = (parseFloat(config.stateMatrices.linear.S[i][j]) + update).toFixed(2);
                         activeIndices.push([i, j]);
-                    });
-                });
+                    }
+                }
                 
                 renderMatrix(config.stateMatrices.linear.S, document.getElementById('linear-s-matrix'), activeIndices);
                 
@@ -880,4 +881,4 @@
         });
     </script>
 </body>
-</html>
+</html>    
