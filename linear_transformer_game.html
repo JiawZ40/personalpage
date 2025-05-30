@@ -523,9 +523,6 @@
                     <!-- 状态时间线将动态生成 -->
                 </div>
                 
-                <div class="animation-area" id="softmax-animation">
-                    <!-- 动画效果区域 -->
-                </div>
                 
                 <div class="explanation">
                     <p>标准softmax注意力需要计算所有位置对之间的注意力分数，导致序列长度的二次复杂度。随着序列长度增加，计算开销急剧增大。</p>
@@ -598,11 +595,7 @@
                 <div class="state-timeline" id="linear-timeline">
                     <!-- 状态时间线将动态生成 -->
                 </div>
-                
-                <div class="animation-area" id="linear-animation">
-                    <!-- 动画效果区域 -->
-                </div>
-                
+                           
                 <div class="explanation">
                     <p>线性注意力通过累积状态矩阵S<sub>t</sub>实现了递归计算，每次更新只需处理当前token，复杂度与序列长度线性相关。</p>
                 </div>
