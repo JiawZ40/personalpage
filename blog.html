@@ -231,44 +231,44 @@
     <script src="assets/js/script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize AOS animation
+            // 初始化AOS动画
             AOS.init({
                 duration: 800,
                 easing: 'slide',
                 once: true
             });
 
-            // Initialize map
+            // 初始化地图
             let map = L.map('visitor-map').setView([30, 100], 2);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
             
-            // Data 
+            // 访客数据管理
             let visitors = JSON.parse(localStorage.getItem('visitors')) || [];
             let visitorCount = visitors.length;
             
-            // Update visitor
+            // 更新访客计数
             document.getElementById('visitor-count').textContent = visitorCount;
             
-            // Initialize visitor
+            // 初始化访客列表
             updateVisitorList();
             
-            // Getting IP
+            // 获取并显示IP信息
             fetch('https://api.ipify.org?format=json')
                 .then(response => response.json())
                 .then(data => {
                     const ip = data.ip;
                     document.getElementById('visitor-ip').textContent = `IP: ${ip}`;
                     
-                    // Getting location information
+                    // 获取地理位置信息
                     fetch(`https://ipapi.co/${ip}/json/`)
                         .then(response => response.json())
                         .then(locationData => {
                             const location = `${locationData.city}, ${locationData.region}, ${locationData.country_name}`;
                             document.getElementById('visitor-location').textContent = location;
                             
-                            // Save visitor
+                            // 保存访客信息
                             const newVisitor = {
                                 id: Date.now(),
                                 ip: ip,
@@ -281,7 +281,7 @@
                             visitors.push(newVisitor);
                             localStorage.setItem('visitors', JSON.stringify(visitors));
                             
-                            // Update visitor and map
+                            // 更新计数和地图
                             document.getElementById('visitor-count').textContent = visitors.length;
                             addVisitorToMap(newVisitor);
                             updateVisitorList();
@@ -296,14 +296,14 @@
                     document.getElementById('visitor-ip').textContent = 'IP: Unable to fetch';
                 });
             
-            // Adding location information in map
+            // 添加访客标记到地图
             function addVisitorToMap(visitor) {
                 if (visitor.lat && visitor.lon) {
                     L.marker([visitor.lat, visitor.lon]).addTo(map)
                         .bindPopup(`<b>${visitor.location}</b><br>${visitor.time}`)
                         .openPopup();
                     
-                    // Display location information in map
+                    // 调整地图视图以显示所有标记
                     if (visitors.length > 1) {
                         let bounds = L.latLngBounds([]);
                         visitors.forEach(v => {
@@ -318,7 +318,7 @@
                 }
             }
             
-            // Update visitor list
+            // 更新访客列表
             function updateVisitorList() {
                 const listEl = document.getElementById('visitor-list');
                 listEl.innerHTML = '';
@@ -328,7 +328,7 @@
                     return;
                 }
                 
-                // Display the latest visitor
+                // 显示最近的10个访客
                 const recentVisitors = visitors.slice(-10).reverse();
                 recentVisitors.forEach(visitor => {
                     const li = document.createElement('li');
@@ -341,7 +341,7 @@
                 });
             }
             
-            // close visitor panel
+            // 关闭访客信息面板
             document.getElementById('close-visitor-info').addEventListener('click', function() {
                 const panel = document.getElementById('visitor-info');
                 panel.classList.add('opacity-0', 'pointer-events-none');
@@ -350,7 +350,7 @@
                 }, 300);
             });
             
-            // Initialize all information
+            // 初始化地图上的所有访客标记
             visitors.forEach(visitor => {
                 addVisitorToMap(visitor);
             });
