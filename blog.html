@@ -6,8 +6,11 @@
     <title>Jiawei Zhu - Blog</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- 添加Leaflet地图库 -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body class="bg-gray-50">
     <!-- Navigation -->
@@ -34,6 +37,39 @@
         <a href="#contact" class="block text-dark hover:text-primary transition-colors font-medium">Contact</a>
       </div>
     </div>
+
+    <!-- 增强版访客信息面板 -->
+    <div id="visitor-info" class="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 z-40 max-w-md transform transition-all duration-300 hover:shadow-xl">
+        <div class="flex items-center justify-between mb-2">
+            <h3 class="font-semibold text-gray-800">Visitor Analytics</h3>
+            <button id="close-visitor-info" class="text-gray-400 hover:text-gray-600">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="space-y-2 text-sm text-gray-600 mb-4">
+            <div class="flex items-center">
+                <i class="fa fa-users mr-2 text-blue-500"></i>
+                <span>Total Visitors: <span id="visitor-count" class="font-semibold">0</span></span>
+            </div>
+            <div class="flex items-center">
+                <i class="fa fa-map-marker mr-2 text-blue-500"></i>
+                <span>Your Location: <span id="visitor-location" class="font-semibold">Loading...</span></span>
+            </div>
+        </div>
+        
+        <!-- 地图容器 -->
+        <div id="visitor-map" class="h-64 w-full rounded-lg border border-gray-200 mb-2"></div>
+        
+        <!-- 访问记录列表 -->
+        <div class="max-h-40 overflow-y-auto bg-gray-50 p-2 rounded-lg">
+            <h4 class="font-medium text-gray-800 mb-1">Recent Visitors:</h4>
+            <ul id="visitor-list" class="text-xs space-y-1">
+                <li class="text-gray-500 italic">Loading visitors...</li>
+            </ul>
+        </div>
+    </div>
+
 <!-- Blog Section -->
 <section id="blog" class="py-20 bg-gray-50">
     <div class="container mx-auto px-6">
@@ -187,13 +223,6 @@
     <footer class="bg-white py-8">
         <div class="container mx-auto px-6 text-center text-gray-600">
             <p>&copy; 2025 Jiawei Zhu. All rights reserved.</p>
-            <!-- page counter -->
-            <div class="mt-4 text-sm">
-                <div id="visitor-info">
-                    <p>Welcome！You are the <span id="visitor-count">th visitor.</span> </p>
-                    <p id="visitor-location">Getting your location information...</p>
-                </div>
-            </div>
         </div>
     </footer>
 
@@ -201,30 +230,130 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="assets/js/script.js"></script>
     <script>
-        // visitor counting and address components.
         document.addEventListener('DOMContentLoaded', function() {
-            // number and location information
-            fetch('https://jiawz40.github.io/personalpage/blog.html')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('visitor-count').textContent = data.value;
-                })
-                .catch(error => {
-                    console.error('Failed to retrieve visitor count:', error);
-                    document.getElementById('visitor-count').textContent = 'error';
-                });
+            // Initialize AOS animation
+            AOS.init({
+                duration: 800,
+                easing: 'slide',
+                once: true
+            });
 
-            // location information
-            fetch('https://ipapi.co/json/')
+            // Initialize map
+            let map = L.map('visitor-map').setView([30, 100], 2);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            // Data 
+            let visitors = JSON.parse(localStorage.getItem('visitors')) || [];
+            let visitorCount = visitors.length;
+            
+            // Update visitor
+            document.getElementById('visitor-count').textContent = visitorCount;
+            
+            // Initialize visitor
+            updateVisitorList();
+            
+            // Getting IP
+            fetch('https://api.ipify.org?format=json')
                 .then(response => response.json())
                 .then(data => {
-                    const locationText = `${data.city}, ${data.region}, ${data.country_name}`;
-                    document.getElementById('visitor-location').textContent = `from: ${locationText}`;
+                    const ip = data.ip;
+                    document.getElementById('visitor-ip').textContent = `IP: ${ip}`;
+                    
+                    // Getting location information
+                    fetch(`https://ipapi.co/${ip}/json/`)
+                        .then(response => response.json())
+                        .then(locationData => {
+                            const location = `${locationData.city}, ${locationData.region}, ${locationData.country_name}`;
+                            document.getElementById('visitor-location').textContent = location;
+                            
+                            // Save visitor
+                            const newVisitor = {
+                                id: Date.now(),
+                                ip: ip,
+                                location: location,
+                                time: new Date().toLocaleString(),
+                                lat: locationData.latitude,
+                                lon: locationData.longitude
+                            };
+                            
+                            visitors.push(newVisitor);
+                            localStorage.setItem('visitors', JSON.stringify(visitors));
+                            
+                            // Update visitor and map
+                            document.getElementById('visitor-count').textContent = visitors.length;
+                            addVisitorToMap(newVisitor);
+                            updateVisitorList();
+                        })
+                        .catch(error => {
+                            console.error('Error fetching location:', error);
+                            document.getElementById('visitor-location').textContent = 'Location: Unable to fetch';
+                        });
                 })
                 .catch(error => {
-                    console.error('Failed to retrieve location information:', error);
-                    document.getElementById('visitor-location').textContent = 'error';
+                    console.error('Error fetching IP:', error);
+                    document.getElementById('visitor-ip').textContent = 'IP: Unable to fetch';
                 });
+            
+            // Adding location information in map
+            function addVisitorToMap(visitor) {
+                if (visitor.lat && visitor.lon) {
+                    L.marker([visitor.lat, visitor.lon]).addTo(map)
+                        .bindPopup(`<b>${visitor.location}</b><br>${visitor.time}`)
+                        .openPopup();
+                    
+                    // Display location information in map
+                    if (visitors.length > 1) {
+                        let bounds = L.latLngBounds([]);
+                        visitors.forEach(v => {
+                            if (v.lat && v.lon) {
+                                bounds.extend([v.lat, v.lon]);
+                            }
+                        });
+                        map.fitBounds(bounds, { padding: [50, 50] });
+                    } else {
+                        map.setView([visitor.lat, visitor.lon], 4);
+                    }
+                }
+            }
+            
+            // Update visitor list
+            function updateVisitorList() {
+                const listEl = document.getElementById('visitor-list');
+                listEl.innerHTML = '';
+                
+                if (visitors.length === 0) {
+                    listEl.innerHTML = '<li class="text-gray-500 italic">No visitors yet</li>';
+                    return;
+                }
+                
+                // Display the latest visitor
+                const recentVisitors = visitors.slice(-10).reverse();
+                recentVisitors.forEach(visitor => {
+                    const li = document.createElement('li');
+                    li.className = 'flex justify-between items-center border-b border-gray-200 pb-1 last:border-0';
+                    li.innerHTML = `
+                        <span>${visitor.location}</span>
+                        <span class="text-gray-400 text-xs">${visitor.time}</span>
+                    `;
+                    listEl.appendChild(li);
+                });
+            }
+            
+            // close visitor panel
+            document.getElementById('close-visitor-info').addEventListener('click', function() {
+                const panel = document.getElementById('visitor-info');
+                panel.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => {
+                    panel.classList.add('hidden');
+                }, 300);
+            });
+            
+            // Initialize all information
+            visitors.forEach(visitor => {
+                addVisitorToMap(visitor);
+            });
         });
     </script>
 </body>
