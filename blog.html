@@ -187,11 +187,11 @@
     <footer class="bg-white py-8">
         <div class="container mx-auto px-6 text-center text-gray-600">
             <p>&copy; 2025 Jiawei Zhu. All rights reserved.</p>
-            <!-- 访客计数和地址组件 -->
+            <!-- page counter -->
             <div class="mt-4 text-sm">
                 <div id="visitor-info">
-                    <p>您是第 <span id="visitor-count">0</span> 位访客</p>
-                    <p id="visitor-location">正在获取您的位置信息...</p>
+                    <p>Welcome！You are the <span id="visitor-count">th visitor.</span> </p>
+                    <p id="visitor-location">Getting your location information...</p>
                 </div>
             </div>
         </div>
@@ -201,29 +201,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="assets/js/script.js"></script>
     <script>
-        // 访客计数和地址组件的JavaScript代码
+        // visitor counting and address components.
         document.addEventListener('DOMContentLoaded', function() {
-            // 获取访客计数和位置信息
+            // number and location information
             fetch('https://api.countapi.xyz/hit/jiaweizhu.xyz/visits')
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('visitor-count').textContent = data.value;
                 })
                 .catch(error => {
-                    console.error('获取访客计数失败:', error);
-                    document.getElementById('visitor-count').textContent = '无法获取';
+                    console.error('Failed to retrieve visitor count:', error);
+                    document.getElementById('visitor-count').textContent = 'error';
                 });
 
-            // 获取地理位置信息
+            // location information
             fetch('https://ipapi.co/json/')
                 .then(response => response.json())
                 .then(data => {
                     const locationText = `${data.city}, ${data.region}, ${data.country_name}`;
-                    document.getElementById('visitor-location').textContent = `来自: ${locationText}`;
+                    document.getElementById('visitor-location').textContent = `from: ${locationText}`;
                 })
                 .catch(error => {
-                    console.error('获取地理位置失败:', error);
-                    document.getElementById('visitor-location').textContent = '无法获取位置信息';
+                    console.error('Failed to retrieve location information:', error);
+                    document.getElementById('visitor-location').textContent = 'error';
                 });
         });
     </script>
